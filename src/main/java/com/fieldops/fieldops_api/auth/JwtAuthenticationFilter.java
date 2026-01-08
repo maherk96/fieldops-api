@@ -14,58 +14,91 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Component
+/**
+ * Spring Security filter responsible for authenticating requests using JWT tokens.
+ *
+ * <p>The filter:
+ *
+ * <ul>
+ *   <li>Extracts the JWT from the {@code Authorization} header
+ *   <li>Validates the token
+ *   <li>Populates the {@link SecurityContextHolder} if authentication succeeds
+ * </ul>
+ *
+ * <p>If the token is missing, invalid, or malformed, the request is rejected with {@code 401
+ * Unauthorized}.
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-  private final JwtService jwtService;
   private static final Logger log = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
+  private final JwtService jwtService;
+
+  /**
+   * Creates a new JWT authentication filter.
+   *
+   * @param jwtService service used for JWT validation and claim extraction
+   */
   public JwtAuthenticationFilter(final JwtService jwtService) {
     this.jwtService = jwtService;
   }
 
+  /**
+   * Filters incoming HTTP requests and performs JWT-based authentication.
+   *
+   * <p>If a valid JWT is found, an authenticated {@link UsernamePasswordAuthenticationToken} is
+   * created using the user ID as the principal and the extracted role as a granted authority.
+   *
+   * @param request the incoming HTTP request
+   * @param response the HTTP response
+   * @param filterChain the remaining filter chain
+   * @throws ServletException if the filter fails
+   * @throws IOException if an I/O error occurs
+   */
   @Override
   protected void doFilterInternal(
       @NonNull HttpServletRequest request,
       @NonNull HttpServletResponse response,
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
-    final String authHeader = request.getHeader("Authorization");
 
+    final var authHeader = request.getHeader("Authorization");
+
+    // No JWT present – continue without authentication
     if (authHeader == null || !authHeader.startsWith("Bearer ")) {
       filterChain.doFilter(request, response);
       return;
     }
 
     try {
-      final String jwt = authHeader.substring(7);
+      final var jwt = authHeader.substring(7);
 
-      if (jwtService.isTokenValid(jwt)) {
-        final UUID userId = jwtService.extractUserId(jwt);
-        final String role = jwtService.extractRole(jwt);
-
-        // Create authentication token with role as authority
-        List<SimpleGrantedAuthority> authorities =
-            List.of(new SimpleGrantedAuthority("ROLE_" + role));
-
-        UsernamePasswordAuthenticationToken authToken =
-            new UsernamePasswordAuthenticationToken(userId, null, authorities);
-
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-      } else {
-        // Invalid token provided: fail fast with 401
+      if (!jwtService.isTokenValid(jwt)) {
+        // Invalid token: fail fast
         if (log.isDebugEnabled()) {
           log.debug("Invalid JWT presented for URI {}", request.getRequestURI());
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return;
       }
+
+      final UUID userId = jwtService.extractUserId(jwt);
+      final String role = jwtService.extractRole(jwt);
+
+      // Map role claim to Spring Security authority
+      final List<SimpleGrantedAuthority> authorities =
+          List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+      var authToken = new UsernamePasswordAuthenticationToken(userId, null, authorities);
+
+      authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+      SecurityContextHolder.getContext().setAuthentication(authToken);
+
     } catch (Exception e) {
-      // Malformed/tampered token: return 401
+      // Malformed or tampered token
       if (log.isDebugEnabled()) {
         log.debug("JWT processing failed for URI {}: {}", request.getRequestURI(), e.getMessage());
       }
