@@ -74,6 +74,42 @@ jobs:
       - name: 🏗️ Build and test (includes JaCoCo verification via Gradle check)
         run: ./gradlew clean build jacocoTestReport --no-daemon --info
 
+      - name: 📥 Install Allure CLI
+        if: always()
+        run: |
+          curl -Ls -o allure.tgz https://github.com/allure-framework/allure2/releases/download/2.27.0/allure-2.27.0.tgz
+          tar -xzf allure.tgz
+          sudo mv allure-2.27.0 /opt/allure
+          sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
+          allure --version
+
+      - name: 🧾 Generate Allure report
+        if: always()
+        run: |
+          # Allure results should be produced by tests via allure-junit5
+          # (default location is build/allure-results)
+          if [ -d "build/allure-results" ] && [ "$(ls -A build/allure-results)" ]; then
+            allure generate build/allure-results --clean -o build/allure-report
+          else
+            echo "No Allure results found in build/allure-results (skipping report generation)."
+          fi
+
+      - name: 📎 Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: build/allure-report/
+          retention-days: 30
+
+      - name: 📎 Upload Allure results (raw)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: build/allure-results/
+          retention-days: 30
+
       - name: 📋 Upload test reports
         if: always()
         uses: actions/upload-artifact@v4

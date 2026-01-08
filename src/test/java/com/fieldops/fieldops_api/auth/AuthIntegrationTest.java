@@ -10,6 +10,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fieldops.fieldops_api.auth.model.LoginRequest;
 import com.fieldops.fieldops_api.user.domain.User;
 import com.fieldops.fieldops_api.user.repos.UserRepository;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +32,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Epic("Authentication")
+@Feature("User Authentication Flow")
 class AuthIntegrationTest {
 
   private MockMvc mockMvc;
@@ -58,6 +66,10 @@ class AuthIntegrationTest {
   }
 
   @Test
+  @Story("Login and retrieve user information")
+  @Description(
+      "Test complete authentication flow: login with credentials and retrieve user profile")
+  @Severity(SeverityLevel.CRITICAL)
   void login_and_me_flow_succeeds() throws Exception {
     // Login
     LoginRequest req = new LoginRequest();
