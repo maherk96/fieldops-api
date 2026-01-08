@@ -4,6 +4,7 @@ plugins {
     id 'java'
     id 'com.diffplug.spotless' version '6.25.0'
     id "org.owasp.dependencycheck" version "9.0.9"
+    id 'jacoco'
 }
 
 group = 'com.fieldops'
@@ -57,6 +58,30 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.70
+            }
+        }
+    }
 }
 
 spotless {

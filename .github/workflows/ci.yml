@@ -8,29 +8,52 @@ on:
   workflow_dispatch:
 
 jobs:
+  lint:
+    name: 🧹 Code Quality (Spotless)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧰 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: 🔐 Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: 🧹 Code format check (Spotless)
+        run: ./gradlew spotlessCheck --no-daemon
+
   build:
     name: 🧪 Build & Test
     runs-on: ubuntu-latest
+    needs: [ lint ]
 
     services:
       postgres:
         image: postgres:16
-        ports: ['5432:5432']
+        ports: [ "5432:5432" ]
         env:
-          POSTGRES_DB: fieldops
+          POSTGRES_DB: fieldops_test
           POSTGRES_USER: fieldops
           POSTGRES_PASSWORD: fieldops
         options: >-
-          --health-cmd="pg_isready -U fieldops -d fieldops"
+          --health-cmd="pg_isready -U fieldops -d fieldops_test"
           --health-interval=5s
           --health-timeout=3s
           --health-retries=20
 
     env:
       SPRING_PROFILES_ACTIVE: test
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/fieldops
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/fieldops_test
       SPRING_DATASOURCE_USERNAME: fieldops
       SPRING_DATASOURCE_PASSWORD: fieldops
+
       JWT_SECRET: 9pjGycRjqYQ/xlLvTszcIkwG2lyUpoIoXJpLyWlT2TU=
       JWT_EXPIRATION: 86400000
 
@@ -41,14 +64,31 @@ jobs:
       - name: ☕ Set up Java 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
 
-      - name: 🧹 Code format check (Spotless)
-        run: ./gradlew spotlessCheck
+      - name: 🔐 Make gradlew executable
+        run: chmod +x gradlew
 
-      - name: 🏗️ Build and test
-        run: ./gradlew clean build --info
+      - name: 🏗️ Build and test (includes JaCoCo verification via Gradle check)
+        run: ./gradlew clean build jacocoTestReport --no-daemon --info
+
+      - name: 📋 Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: build/reports/tests/test/
+          retention-days: 30
+
+      - name: 📋 Upload coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-reports
+          path: build/reports/jacoco/
+          retention-days: 30
 
       - name: 📦 Archive build artifacts
         if: success()
@@ -56,3 +96,38 @@ jobs:
         with:
           name: fieldops-api-jar
           path: build/libs/*.jar
+          retention-days: 30
+
+  security:
+    name: 🔒 Dependency Scan (Manual / Best-effort)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: 🧰 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: 🔐 Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: 🔒 OWASP Dependency Check (non-blocking)
+        run: ./gradlew dependencyCheckAnalyze --no-daemon
+        continue-on-error: true
+
+      - name: 📊 Upload OWASP report (if generated)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: owasp-dependency-check-report
+          path: |
+            build/reports/dependency-check-report.html
+            build/reports/dependency-check-report.json
+            build/reports/dependency-check-report.xml
+          retention-days: 30
