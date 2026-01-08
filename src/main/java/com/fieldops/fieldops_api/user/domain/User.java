@@ -21,6 +21,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,15 +61,18 @@ public class User {
   @Column(nullable = false)
   private Boolean active;
 
+  @Version
   @Column(nullable = false)
   private Integer version;
 
   @Column(nullable = false)
   private Long changeVersion;
 
-  @Column(nullable = false)
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
   private OffsetDateTime createdAt;
 
+  @LastModifiedDate
   @Column(nullable = false)
   private OffsetDateTime updatedAt;
 
@@ -113,12 +117,4 @@ public class User {
 
   @OneToMany(mappedBy = "user")
   private Set<OfflineChangesLog> userOfflineChangesLogs = new HashSet<>();
-
-  @CreatedDate
-  @Column(nullable = false, updatable = false)
-  private OffsetDateTime dateCreated;
-
-  @LastModifiedDate
-  @Column(nullable = false)
-  private OffsetDateTime lastUpdated;
 }
