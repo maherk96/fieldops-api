@@ -4,11 +4,9 @@ import com.fieldops.fieldops_api.work_order_assignment.domain.WorkOrderAssignmen
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
 public interface WorkOrderAssignmentRepository extends JpaRepository<WorkOrderAssignment, UUID> {
 
-    WorkOrderAssignment findFirstByWorkOrderId(UUID id);
+  WorkOrderAssignment findFirstByWorkOrderId(UUID id);
 
-    WorkOrderAssignment findFirstByEngineerUserId(UUID id);
-
+  WorkOrderAssignment findFirstByEngineerUserId(UUID id);
 }

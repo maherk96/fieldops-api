@@ -6,32 +6,23 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class DeviceSyncStateDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    private String deviceId;
+  @NotNull private String deviceId;
 
-    @NotNull
-    private String tableName;
+  @NotNull private String tableName;
 
-    @NotNull
-    private Long lastChangeVersion;
+  @NotNull private Long lastChangeVersion;
 
-    @NotNull
-    private OffsetDateTime lastSyncAt;
+  @NotNull private OffsetDateTime lastSyncAt;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private OffsetDateTime updatedAt;
+  @NotNull private OffsetDateTime updatedAt;
 
-    @NotNull
-    private UUID user;
-
+  @NotNull private UUID user;
 }

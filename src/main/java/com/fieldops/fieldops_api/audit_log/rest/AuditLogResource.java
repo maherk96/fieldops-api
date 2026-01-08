@@ -17,44 +17,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/auditLogs", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuditLogResource {
 
-    private final AuditLogService auditLogService;
+  private final AuditLogService auditLogService;
 
-    public AuditLogResource(final AuditLogService auditLogService) {
-        this.auditLogService = auditLogService;
-    }
+  public AuditLogResource(final AuditLogService auditLogService) {
+    this.auditLogService = auditLogService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<AuditLogDTO>> getAllAuditLogs() {
-        return ResponseEntity.ok(auditLogService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<AuditLogDTO>> getAllAuditLogs() {
+    return ResponseEntity.ok(auditLogService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AuditLogDTO> getAuditLog(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(auditLogService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<AuditLogDTO> getAuditLog(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(auditLogService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createAuditLog(@RequestBody @Valid final AuditLogDTO auditLogDTO) {
-        final UUID createdId = auditLogService.create(auditLogDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createAuditLog(@RequestBody @Valid final AuditLogDTO auditLogDTO) {
+    final UUID createdId = auditLogService.create(auditLogDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateAuditLog(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final AuditLogDTO auditLogDTO) {
-        auditLogService.update(id, auditLogDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateAuditLog(
+      @PathVariable(name = "id") final UUID id, @RequestBody @Valid final AuditLogDTO auditLogDTO) {
+    auditLogService.update(id, auditLogDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAuditLog(@PathVariable(name = "id") final UUID id) {
-        auditLogService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteAuditLog(@PathVariable(name = "id") final UUID id) {
+    auditLogService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

@@ -17,45 +17,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/syncQueues", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SyncQueueResource {
 
-    private final SyncQueueService syncQueueService;
+  private final SyncQueueService syncQueueService;
 
-    public SyncQueueResource(final SyncQueueService syncQueueService) {
-        this.syncQueueService = syncQueueService;
-    }
+  public SyncQueueResource(final SyncQueueService syncQueueService) {
+    this.syncQueueService = syncQueueService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<SyncQueueDTO>> getAllSyncQueues() {
-        return ResponseEntity.ok(syncQueueService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<SyncQueueDTO>> getAllSyncQueues() {
+    return ResponseEntity.ok(syncQueueService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SyncQueueDTO> getSyncQueue(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(syncQueueService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<SyncQueueDTO> getSyncQueue(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(syncQueueService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createSyncQueue(
-            @RequestBody @Valid final SyncQueueDTO syncQueueDTO) {
-        final UUID createdId = syncQueueService.create(syncQueueDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createSyncQueue(@RequestBody @Valid final SyncQueueDTO syncQueueDTO) {
+    final UUID createdId = syncQueueService.create(syncQueueDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateSyncQueue(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final SyncQueueDTO syncQueueDTO) {
-        syncQueueService.update(id, syncQueueDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateSyncQueue(
+      @PathVariable(name = "id") final UUID id,
+      @RequestBody @Valid final SyncQueueDTO syncQueueDTO) {
+    syncQueueService.update(id, syncQueueDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSyncQueue(@PathVariable(name = "id") final UUID id) {
-        syncQueueService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteSyncQueue(@PathVariable(name = "id") final UUID id) {
+    syncQueueService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

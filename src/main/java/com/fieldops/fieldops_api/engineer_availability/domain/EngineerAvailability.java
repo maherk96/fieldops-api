@@ -18,44 +18,42 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class EngineerAvailability {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  @GeneratedValue
+  @UuidGenerator
+  private UUID id;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String availabilityType;
+  @Column(nullable = false, columnDefinition = "text")
+  private String availabilityType;
 
-    @Column(nullable = false)
-    private OffsetDateTime startTime;
+  @Column(nullable = false)
+  private OffsetDateTime startTime;
 
-    @Column(nullable = false)
-    private OffsetDateTime endTime;
+  @Column(nullable = false)
+  private OffsetDateTime endTime;
 
-    @Column(columnDefinition = "text")
-    private String notes;
+  @Column(columnDefinition = "text")
+  private String notes;
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+  @Column(nullable = false)
+  private OffsetDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "engineer_user_id", nullable = false)
-    private User engineerUser;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "engineer_user_id", nullable = false)
+  private User engineerUser;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
+  @LastModifiedDate
+  @Column(nullable = false)
+  private OffsetDateTime lastUpdated;
 }

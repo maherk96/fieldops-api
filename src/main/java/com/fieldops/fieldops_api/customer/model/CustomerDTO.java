@@ -6,30 +6,23 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class CustomerDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    private String name;
+  @NotNull private String name;
 
-    private String externalRef;
+  private String externalRef;
 
-    private String phone;
+  private String phone;
 
-    @NotNull
-    private Integer version;
+  @NotNull private Integer version;
 
-    @NotNull
-    private Long changeVersion;
+  @NotNull private Long changeVersion;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private OffsetDateTime updatedAt;
-
+  @NotNull private OffsetDateTime updatedAt;
 }

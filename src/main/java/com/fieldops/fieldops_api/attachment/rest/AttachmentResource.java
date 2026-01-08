@@ -17,45 +17,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/attachments", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AttachmentResource {
 
-    private final AttachmentService attachmentService;
+  private final AttachmentService attachmentService;
 
-    public AttachmentResource(final AttachmentService attachmentService) {
-        this.attachmentService = attachmentService;
-    }
+  public AttachmentResource(final AttachmentService attachmentService) {
+    this.attachmentService = attachmentService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<AttachmentDTO>> getAllAttachments() {
-        return ResponseEntity.ok(attachmentService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<AttachmentDTO>> getAllAttachments() {
+    return ResponseEntity.ok(attachmentService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AttachmentDTO> getAttachment(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(attachmentService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<AttachmentDTO> getAttachment(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(attachmentService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createAttachment(
-            @RequestBody @Valid final AttachmentDTO attachmentDTO) {
-        final UUID createdId = attachmentService.create(attachmentDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createAttachment(
+      @RequestBody @Valid final AttachmentDTO attachmentDTO) {
+    final UUID createdId = attachmentService.create(attachmentDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateAttachment(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final AttachmentDTO attachmentDTO) {
-        attachmentService.update(id, attachmentDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateAttachment(
+      @PathVariable(name = "id") final UUID id,
+      @RequestBody @Valid final AttachmentDTO attachmentDTO) {
+    attachmentService.update(id, attachmentDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAttachment(@PathVariable(name = "id") final UUID id) {
-        attachmentService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteAttachment(@PathVariable(name = "id") final UUID id) {
+    attachmentService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

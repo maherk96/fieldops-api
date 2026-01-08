@@ -11,6 +11,8 @@ jobs:
     name: 🧪 Build & Test
     runs-on: ubuntu-latest
 
+
+
     services:
       postgres:
         image: postgres:16
@@ -48,6 +50,9 @@ jobs:
 
       - name: 🏗️ Build and test
         run: ./gradlew clean build --info
+
+      - name: 🔍 Dependency vulnerability scan
+        run: ./gradlew dependencyCheckAnalyze
 
       - name: 📦 Archive build artifacts
         if: success()

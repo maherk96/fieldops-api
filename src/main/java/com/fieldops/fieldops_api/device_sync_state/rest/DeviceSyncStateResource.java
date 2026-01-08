@@ -17,46 +17,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/deviceSyncStates", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DeviceSyncStateResource {
 
-    private final DeviceSyncStateService deviceSyncStateService;
+  private final DeviceSyncStateService deviceSyncStateService;
 
-    public DeviceSyncStateResource(final DeviceSyncStateService deviceSyncStateService) {
-        this.deviceSyncStateService = deviceSyncStateService;
-    }
+  public DeviceSyncStateResource(final DeviceSyncStateService deviceSyncStateService) {
+    this.deviceSyncStateService = deviceSyncStateService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<DeviceSyncStateDTO>> getAllDeviceSyncStates() {
-        return ResponseEntity.ok(deviceSyncStateService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<DeviceSyncStateDTO>> getAllDeviceSyncStates() {
+    return ResponseEntity.ok(deviceSyncStateService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<DeviceSyncStateDTO> getDeviceSyncState(
-            @PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(deviceSyncStateService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<DeviceSyncStateDTO> getDeviceSyncState(
+      @PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(deviceSyncStateService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createDeviceSyncState(
-            @RequestBody @Valid final DeviceSyncStateDTO deviceSyncStateDTO) {
-        final UUID createdId = deviceSyncStateService.create(deviceSyncStateDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createDeviceSyncState(
+      @RequestBody @Valid final DeviceSyncStateDTO deviceSyncStateDTO) {
+    final UUID createdId = deviceSyncStateService.create(deviceSyncStateDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateDeviceSyncState(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final DeviceSyncStateDTO deviceSyncStateDTO) {
-        deviceSyncStateService.update(id, deviceSyncStateDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateDeviceSyncState(
+      @PathVariable(name = "id") final UUID id,
+      @RequestBody @Valid final DeviceSyncStateDTO deviceSyncStateDTO) {
+    deviceSyncStateService.update(id, deviceSyncStateDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDeviceSyncState(@PathVariable(name = "id") final UUID id) {
-        deviceSyncStateService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteDeviceSyncState(@PathVariable(name = "id") final UUID id) {
+    deviceSyncStateService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

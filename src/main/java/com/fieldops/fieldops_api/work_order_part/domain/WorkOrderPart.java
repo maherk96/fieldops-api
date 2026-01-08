@@ -21,55 +21,53 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class WorkOrderPart {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  @GeneratedValue
+  @UuidGenerator
+  private UUID id;
 
-    @Column(columnDefinition = "text")
-    private String partNumber;
+  @Column(columnDefinition = "text")
+  private String partNumber;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String description;
+  @Column(nullable = false, columnDefinition = "text")
+  private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal quantity;
+  @Column(nullable = false, precision = 10, scale = 2)
+  private BigDecimal quantity;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal unitPrice;
+  @Column(precision = 10, scale = 2)
+  private BigDecimal unitPrice;
 
-    @Column(nullable = false)
-    private Long changeVersion;
+  @Column(nullable = false)
+  private Long changeVersion;
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+  @Column(nullable = false)
+  private OffsetDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "work_order_id", nullable = false)
-    private WorkOrder workOrder;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "work_order_id", nullable = false)
+  private WorkOrder workOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "part_id")
-    private PartsCatalog part;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "part_id")
+  private PartsCatalog part;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recorded_by_user_id")
-    private User recordedByUser;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "recorded_by_user_id")
+  private User recordedByUser;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
+  @LastModifiedDate
+  @Column(nullable = false)
+  private OffsetDateTime lastUpdated;
 }

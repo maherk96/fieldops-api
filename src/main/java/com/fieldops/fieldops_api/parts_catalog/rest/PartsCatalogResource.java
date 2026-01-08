@@ -17,46 +17,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/partsCatalogs", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PartsCatalogResource {
 
-    private final PartsCatalogService partsCatalogService;
+  private final PartsCatalogService partsCatalogService;
 
-    public PartsCatalogResource(final PartsCatalogService partsCatalogService) {
-        this.partsCatalogService = partsCatalogService;
-    }
+  public PartsCatalogResource(final PartsCatalogService partsCatalogService) {
+    this.partsCatalogService = partsCatalogService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<PartsCatalogDTO>> getAllPartsCatalogs() {
-        return ResponseEntity.ok(partsCatalogService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<PartsCatalogDTO>> getAllPartsCatalogs() {
+    return ResponseEntity.ok(partsCatalogService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PartsCatalogDTO> getPartsCatalog(
-            @PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(partsCatalogService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<PartsCatalogDTO> getPartsCatalog(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(partsCatalogService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createPartsCatalog(
-            @RequestBody @Valid final PartsCatalogDTO partsCatalogDTO) {
-        final UUID createdId = partsCatalogService.create(partsCatalogDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createPartsCatalog(
+      @RequestBody @Valid final PartsCatalogDTO partsCatalogDTO) {
+    final UUID createdId = partsCatalogService.create(partsCatalogDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updatePartsCatalog(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final PartsCatalogDTO partsCatalogDTO) {
-        partsCatalogService.update(id, partsCatalogDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updatePartsCatalog(
+      @PathVariable(name = "id") final UUID id,
+      @RequestBody @Valid final PartsCatalogDTO partsCatalogDTO) {
+    partsCatalogService.update(id, partsCatalogDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePartsCatalog(@PathVariable(name = "id") final UUID id) {
-        partsCatalogService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deletePartsCatalog(@PathVariable(name = "id") final UUID id) {
+    partsCatalogService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

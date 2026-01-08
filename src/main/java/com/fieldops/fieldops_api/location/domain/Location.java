@@ -24,77 +24,75 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class Location {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  @GeneratedValue
+  @UuidGenerator
+  private UUID id;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String name;
+  @Column(nullable = false, columnDefinition = "text")
+  private String name;
 
-    @Column(columnDefinition = "text")
-    private String addressLine1;
+  @Column(columnDefinition = "text")
+  private String addressLine1;
 
-    @Column(columnDefinition = "text")
-    private String addressLine2;
+  @Column(columnDefinition = "text")
+  private String addressLine2;
 
-    @Column(columnDefinition = "text")
-    private String city;
+  @Column(columnDefinition = "text")
+  private String city;
 
-    @Column(columnDefinition = "text")
-    private String region;
+  @Column(columnDefinition = "text")
+  private String region;
 
-    @Column(columnDefinition = "text")
-    private String postcode;
+  @Column(columnDefinition = "text")
+  private String postcode;
 
-    @Column(columnDefinition = "text")
-    private String country;
+  @Column(columnDefinition = "text")
+  private String country;
 
-    @Column(columnDefinition = "text")
-    private String contactPhone;
+  @Column(columnDefinition = "text")
+  private String contactPhone;
 
-    @Column(precision = 10, scale = 7)
-    private BigDecimal lat;
+  @Column(precision = 10, scale = 7)
+  private BigDecimal lat;
 
-    @Column(precision = 10, scale = 7)
-    private BigDecimal lng;
+  @Column(precision = 10, scale = 7)
+  private BigDecimal lng;
 
-    @Column(nullable = false)
-    private Integer version;
+  @Column(nullable = false)
+  private Integer version;
 
-    @Column(nullable = false)
-    private Long changeVersion;
+  @Column(nullable = false)
+  private Long changeVersion;
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+  @Column(nullable = false)
+  private OffsetDateTime createdAt;
 
-    @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+  @Column(nullable = false)
+  private OffsetDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "customer_id", nullable = false)
+  private Customer customer;
 
-    @OneToMany(mappedBy = "location")
-    private Set<Asset> locationAssets = new HashSet<>();
+  @OneToMany(mappedBy = "location")
+  private Set<Asset> locationAssets = new HashSet<>();
 
-    @OneToMany(mappedBy = "location")
-    private Set<WorkOrder> locationWorkOrders = new HashSet<>();
+  @OneToMany(mappedBy = "location")
+  private Set<WorkOrder> locationWorkOrders = new HashSet<>();
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
+  @LastModifiedDate
+  @Column(nullable = false)
+  private OffsetDateTime lastUpdated;
 }
