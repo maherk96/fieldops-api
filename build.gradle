@@ -46,18 +46,12 @@ dependencies {
     // --- Database ---
     runtimeOnly 'org.postgresql:postgresql'
 
-    // --- Error handling (temporarily removed to fix test classpath issue)
-    // implementation 'io.github.wimdeblauwe:error-handling-spring-boot-starter:5.0.0'
-
-    // --- Lombok ---
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
     // --- Tests ---
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'com.h2database:h2'
-    // Ensure JUnit Platform launcher available for Gradle test execution
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -75,7 +69,6 @@ spotless {
     }
 }
 
-// ✅ Enforce formatting in builds & CI
 tasks.named('build') {
     dependsOn tasks.named('spotlessCheck')
 }
