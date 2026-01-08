@@ -18,49 +18,47 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class Customer {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  @GeneratedValue
+  @UuidGenerator
+  private UUID id;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String name;
+  @Column(nullable = false, columnDefinition = "text")
+  private String name;
 
-    @Column(columnDefinition = "text")
-    private String externalRef;
+  @Column(columnDefinition = "text")
+  private String externalRef;
 
-    @Column(columnDefinition = "text")
-    private String phone;
+  @Column(columnDefinition = "text")
+  private String phone;
 
-    @Column(nullable = false)
-    private Integer version;
+  @Column(nullable = false)
+  private Integer version;
 
-    @Column(nullable = false)
-    private Long changeVersion;
+  @Column(nullable = false)
+  private Long changeVersion;
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+  @Column(nullable = false)
+  private OffsetDateTime createdAt;
 
-    @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+  @Column(nullable = false)
+  private OffsetDateTime updatedAt;
 
-    @OneToMany(mappedBy = "customer")
-    private Set<Location> customerLocations = new HashSet<>();
+  @OneToMany(mappedBy = "customer")
+  private Set<Location> customerLocations = new HashSet<>();
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
+  @LastModifiedDate
+  @Column(nullable = false)
+  private OffsetDateTime lastUpdated;
 }

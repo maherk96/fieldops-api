@@ -17,46 +17,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/engineerLocations", produces = MediaType.APPLICATION_JSON_VALUE)
 public class EngineerLocationResource {
 
-    private final EngineerLocationService engineerLocationService;
+  private final EngineerLocationService engineerLocationService;
 
-    public EngineerLocationResource(final EngineerLocationService engineerLocationService) {
-        this.engineerLocationService = engineerLocationService;
-    }
+  public EngineerLocationResource(final EngineerLocationService engineerLocationService) {
+    this.engineerLocationService = engineerLocationService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<EngineerLocationDTO>> getAllEngineerLocations() {
-        return ResponseEntity.ok(engineerLocationService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<EngineerLocationDTO>> getAllEngineerLocations() {
+    return ResponseEntity.ok(engineerLocationService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EngineerLocationDTO> getEngineerLocation(
-            @PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(engineerLocationService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<EngineerLocationDTO> getEngineerLocation(
+      @PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(engineerLocationService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createEngineerLocation(
-            @RequestBody @Valid final EngineerLocationDTO engineerLocationDTO) {
-        final UUID createdId = engineerLocationService.create(engineerLocationDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createEngineerLocation(
+      @RequestBody @Valid final EngineerLocationDTO engineerLocationDTO) {
+    final UUID createdId = engineerLocationService.create(engineerLocationDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateEngineerLocation(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final EngineerLocationDTO engineerLocationDTO) {
-        engineerLocationService.update(id, engineerLocationDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateEngineerLocation(
+      @PathVariable(name = "id") final UUID id,
+      @RequestBody @Valid final EngineerLocationDTO engineerLocationDTO) {
+    engineerLocationService.update(id, engineerLocationDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEngineerLocation(@PathVariable(name = "id") final UUID id) {
-        engineerLocationService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteEngineerLocation(@PathVariable(name = "id") final UUID id) {
+    engineerLocationService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

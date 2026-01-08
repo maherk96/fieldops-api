@@ -32,7 +32,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @Table(name = "\"user\"")
 @EntityListeners(AuditingEntityListener.class)
@@ -40,84 +39,86 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 public class User {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  @GeneratedValue
+  @UuidGenerator
+  private UUID id;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String email;
+  @Column(nullable = false, columnDefinition = "text")
+  private String email;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String fullName;
+  @Column(nullable = false, columnDefinition = "text")
+  private String password;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String role;
+  @Column(nullable = false, columnDefinition = "text")
+  private String fullName;
 
-    @Column(nullable = false)
-    private Boolean active;
+  @Column(nullable = false, columnDefinition = "text")
+  private String role;
 
-    @Column(nullable = false)
-    private Integer version;
+  @Column(nullable = false)
+  private Boolean active;
 
-    @Column(nullable = false)
-    private Long changeVersion;
+  @Column(nullable = false)
+  private Integer version;
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+  @Column(nullable = false)
+  private Long changeVersion;
 
-    @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+  @Column(nullable = false)
+  private OffsetDateTime createdAt;
 
-    @OneToMany(mappedBy = "lastModifiedBy")
-    private Set<WorkOrder> lastModifiedByWorkOrders = new HashSet<>();
+  @Column(nullable = false)
+  private OffsetDateTime updatedAt;
 
-    @OneToMany(mappedBy = "engineerUser")
-    private Set<WorkOrderAssignment> engineerUserWorkOrderAssignments = new HashSet<>();
+  @OneToMany(mappedBy = "lastModifiedBy")
+  private Set<WorkOrder> lastModifiedByWorkOrders = new HashSet<>();
 
-    @OneToMany(mappedBy = "createdByUser")
-    private Set<WorkOrderEvent> createdByUserWorkOrderEvents = new HashSet<>();
+  @OneToMany(mappedBy = "engineerUser")
+  private Set<WorkOrderAssignment> engineerUserWorkOrderAssignments = new HashSet<>();
 
-    @OneToMany(mappedBy = "uploadedByUser")
-    private Set<Attachment> uploadedByUserAttachments = new HashSet<>();
+  @OneToMany(mappedBy = "createdByUser")
+  private Set<WorkOrderEvent> createdByUserWorkOrderEvents = new HashSet<>();
 
-    @OneToMany(mappedBy = "engineerUser")
-    private Set<WorkOrderTimeEntry> engineerUserWorkOrderTimeEntries = new HashSet<>();
+  @OneToMany(mappedBy = "uploadedByUser")
+  private Set<Attachment> uploadedByUserAttachments = new HashSet<>();
 
-    @OneToMany(mappedBy = "recordedByUser")
-    private Set<WorkOrderPart> recordedByUserWorkOrderParts = new HashSet<>();
+  @OneToMany(mappedBy = "engineerUser")
+  private Set<WorkOrderTimeEntry> engineerUserWorkOrderTimeEntries = new HashSet<>();
 
-    @OneToMany(mappedBy = "engineerUser")
-    private Set<EngineerAvailability> engineerUserEngineerAvailabilities = new HashSet<>();
+  @OneToMany(mappedBy = "recordedByUser")
+  private Set<WorkOrderPart> recordedByUserWorkOrderParts = new HashSet<>();
 
-    @OneToMany(mappedBy = "engineerUser")
-    private Set<EngineerLocation> engineerUserEngineerLocations = new HashSet<>();
+  @OneToMany(mappedBy = "engineerUser")
+  private Set<EngineerAvailability> engineerUserEngineerAvailabilities = new HashSet<>();
 
-    @OneToMany(mappedBy = "engineerUser")
-    private Set<EngineerLastLocation> engineerUserEngineerLastLocations = new HashSet<>();
+  @OneToMany(mappedBy = "engineerUser")
+  private Set<EngineerLocation> engineerUserEngineerLocations = new HashSet<>();
 
-    @OneToMany(mappedBy = "resolvedByUser")
-    private Set<SyncConflict> resolvedByUserSyncConflicts = new HashSet<>();
+  @OneToMany(mappedBy = "engineerUser")
+  private Set<EngineerLastLocation> engineerUserEngineerLastLocations = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<DeviceSyncState> userDeviceSyncStates = new HashSet<>();
+  @OneToMany(mappedBy = "resolvedByUser")
+  private Set<SyncConflict> resolvedByUserSyncConflicts = new HashSet<>();
 
-    @OneToMany(mappedBy = "changedByUser")
-    private Set<AuditLog> changedByUserAuditLogs = new HashSet<>();
+  @OneToMany(mappedBy = "user")
+  private Set<DeviceSyncState> userDeviceSyncStates = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<SyncQueue> userSyncQueues = new HashSet<>();
+  @OneToMany(mappedBy = "changedByUser")
+  private Set<AuditLog> changedByUserAuditLogs = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private Set<OfflineChangesLog> userOfflineChangesLogs = new HashSet<>();
+  @OneToMany(mappedBy = "user")
+  private Set<SyncQueue> userSyncQueues = new HashSet<>();
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @OneToMany(mappedBy = "user")
+  private Set<OfflineChangesLog> userOfflineChangesLogs = new HashSet<>();
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
+  @LastModifiedDate
+  @Column(nullable = false)
+  private OffsetDateTime lastUpdated;
 }

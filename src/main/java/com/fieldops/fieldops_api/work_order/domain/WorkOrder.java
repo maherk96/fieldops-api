@@ -29,106 +29,97 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class WorkOrder {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  @GeneratedValue
+  @UuidGenerator
+  private UUID id;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String workOrderNo;
+  @Column(nullable = false, columnDefinition = "text")
+  private String workOrderNo;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String title;
+  @Column(nullable = false, columnDefinition = "text")
+  private String title;
 
-    @Column(columnDefinition = "text")
-    private String description;
+  @Column(columnDefinition = "text")
+  private String description;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String priority;
+  @Column(nullable = false, columnDefinition = "text")
+  private String priority;
 
-    @Column(nullable = false, columnDefinition = "text")
-    private String status;
+  @Column(nullable = false, columnDefinition = "text")
+  private String status;
 
-    @Column
-    private OffsetDateTime scheduledStart;
+  @Column private OffsetDateTime scheduledStart;
 
-    @Column
-    private OffsetDateTime scheduledEnd;
+  @Column private OffsetDateTime scheduledEnd;
 
-    @Column
-    private Integer estimatedDurationMinutes;
+  @Column private Integer estimatedDurationMinutes;
 
-    @Column
-    private OffsetDateTime actualStart;
+  @Column private OffsetDateTime actualStart;
 
-    @Column
-    private OffsetDateTime actualEnd;
+  @Column private OffsetDateTime actualEnd;
 
-    @Column
-    private OffsetDateTime completedAt;
+  @Column private OffsetDateTime completedAt;
 
-    @Column(columnDefinition = "text")
-    private String completionNotes;
+  @Column(columnDefinition = "text")
+  private String completionNotes;
 
-    @Column
-    private OffsetDateTime deletedAt;
+  @Column private OffsetDateTime deletedAt;
 
-    @Column(nullable = false)
-    private Integer version;
+  @Column(nullable = false)
+  private Integer version;
 
-    @Column(nullable = false)
-    private Long changeVersion;
+  @Column(nullable = false)
+  private Long changeVersion;
 
-    @Column(nullable = false)
-    private OffsetDateTime createdAt;
+  @Column(nullable = false)
+  private OffsetDateTime createdAt;
 
-    @Column(nullable = false)
-    private OffsetDateTime updatedAt;
+  @Column(nullable = false)
+  private OffsetDateTime updatedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "location_id", nullable = false)
+  private Location location;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "asset_id")
-    private Asset asset;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "asset_id")
+  private Asset asset;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "last_modified_by_id")
-    private User lastModifiedBy;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "last_modified_by_id")
+  private User lastModifiedBy;
 
-    @OneToMany(mappedBy = "workOrder")
-    private Set<WorkOrderAssignment> workOrderWorkOrderAssignments = new HashSet<>();
+  @OneToMany(mappedBy = "workOrder")
+  private Set<WorkOrderAssignment> workOrderWorkOrderAssignments = new HashSet<>();
 
-    @OneToMany(mappedBy = "workOrder")
-    private Set<WorkOrderEvent> workOrderWorkOrderEvents = new HashSet<>();
+  @OneToMany(mappedBy = "workOrder")
+  private Set<WorkOrderEvent> workOrderWorkOrderEvents = new HashSet<>();
 
-    @OneToMany(mappedBy = "workOrder")
-    private Set<Attachment> workOrderAttachments = new HashSet<>();
+  @OneToMany(mappedBy = "workOrder")
+  private Set<Attachment> workOrderAttachments = new HashSet<>();
 
-    @OneToMany(mappedBy = "workOrder")
-    private Set<WorkOrderTimeEntry> workOrderWorkOrderTimeEntries = new HashSet<>();
+  @OneToMany(mappedBy = "workOrder")
+  private Set<WorkOrderTimeEntry> workOrderWorkOrderTimeEntries = new HashSet<>();
 
-    @OneToMany(mappedBy = "workOrder")
-    private Set<WorkOrderPart> workOrderWorkOrderParts = new HashSet<>();
+  @OneToMany(mappedBy = "workOrder")
+  private Set<WorkOrderPart> workOrderWorkOrderParts = new HashSet<>();
 
-    @OneToMany(mappedBy = "workOrder")
-    private Set<WorkOrderSignature> workOrderWorkOrderSignatures = new HashSet<>();
+  @OneToMany(mappedBy = "workOrder")
+  private Set<WorkOrderSignature> workOrderWorkOrderSignatures = new HashSet<>();
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
+  @LastModifiedDate
+  @Column(nullable = false)
+  private OffsetDateTime lastUpdated;
 }

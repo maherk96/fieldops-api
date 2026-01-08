@@ -6,35 +6,25 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class UserDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    private String email;
+  @NotNull private String email;
 
-    @NotNull
-    private String fullName;
+  @NotNull private String fullName;
 
-    @NotNull
-    private String role;
+  @NotNull private String role;
 
-    @NotNull
-    private Boolean active;
+  @NotNull private Boolean active;
 
-    @NotNull
-    private Integer version;
+  @NotNull private Integer version;
 
-    @NotNull
-    private Long changeVersion;
+  @NotNull private Long changeVersion;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private OffsetDateTime updatedAt;
-
+  @NotNull private OffsetDateTime updatedAt;
 }

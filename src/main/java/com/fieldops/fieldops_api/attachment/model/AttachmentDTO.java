@@ -6,38 +6,31 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class AttachmentDTO {
 
-    private UUID id;
+  private UUID id;
 
-    private String attachmentType;
+  private String attachmentType;
 
-    @NotNull
-    private String storageKey;
+  @NotNull private String storageKey;
 
-    @NotNull
-    private String fileName;
+  @NotNull private String fileName;
 
-    private String mimeType;
+  private String mimeType;
 
-    private Long sizeBytes;
+  private Long sizeBytes;
 
-    @NotNull
-    private String uploadStatus;
+  @NotNull private String uploadStatus;
 
-    private String uploadedFromDevice;
+  private String uploadedFromDevice;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private UUID workOrder;
+  @NotNull private UUID workOrder;
 
-    private UUID event;
+  private UUID event;
 
-    private UUID uploadedByUser;
-
+  private UUID uploadedByUser;
 }

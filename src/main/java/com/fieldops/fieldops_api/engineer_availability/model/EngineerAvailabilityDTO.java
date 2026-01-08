@@ -6,28 +6,21 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class EngineerAvailabilityDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    private String availabilityType;
+  @NotNull private String availabilityType;
 
-    @NotNull
-    private OffsetDateTime startTime;
+  @NotNull private OffsetDateTime startTime;
 
-    @NotNull
-    private OffsetDateTime endTime;
+  @NotNull private OffsetDateTime endTime;
 
-    private String notes;
+  private String notes;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private UUID engineerUser;
-
+  @NotNull private UUID engineerUser;
 }

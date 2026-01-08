@@ -19,45 +19,42 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class WorkOrderAssignment {
 
-    @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue
-    @UuidGenerator
-    private UUID id;
+  @Id
+  @Column(nullable = false, updatable = false)
+  @GeneratedValue
+  @UuidGenerator
+  private UUID id;
 
-    @Column(nullable = false)
-    private OffsetDateTime assignedAt;
+  @Column(nullable = false)
+  private OffsetDateTime assignedAt;
 
-    @Column
-    private OffsetDateTime unassignedAt;
+  @Column private OffsetDateTime unassignedAt;
 
-    @Column(nullable = false)
-    private Boolean active;
+  @Column(nullable = false)
+  private Boolean active;
 
-    @Column(nullable = false)
-    private Long changeVersion;
+  @Column(nullable = false)
+  private Long changeVersion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "work_order_id", nullable = false)
-    private WorkOrder workOrder;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "work_order_id", nullable = false)
+  private WorkOrder workOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "engineer_user_id", nullable = false)
-    private User engineerUser;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "engineer_user_id", nullable = false)
+  private User engineerUser;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private OffsetDateTime dateCreated;
+  @CreatedDate
+  @Column(nullable = false, updatable = false)
+  private OffsetDateTime dateCreated;
 
-    @LastModifiedDate
-    @Column(nullable = false)
-    private OffsetDateTime lastUpdated;
-
+  @LastModifiedDate
+  @Column(nullable = false)
+  private OffsetDateTime lastUpdated;
 }

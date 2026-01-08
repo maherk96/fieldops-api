@@ -9,51 +9,43 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class LocationDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    private String name;
+  @NotNull private String name;
 
-    private String addressLine1;
+  private String addressLine1;
 
-    private String addressLine2;
+  private String addressLine2;
 
-    private String city;
+  private String city;
 
-    private String region;
+  private String region;
 
-    private String postcode;
+  private String postcode;
 
-    private String country;
+  private String country;
 
-    private String contactPhone;
+  private String contactPhone;
 
-    @Digits(integer = 10, fraction = 7)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal lat;
+  @Digits(integer = 10, fraction = 7)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal lat;
 
-    @Digits(integer = 10, fraction = 7)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal lng;
+  @Digits(integer = 10, fraction = 7)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal lng;
 
-    @NotNull
-    private Integer version;
+  @NotNull private Integer version;
 
-    @NotNull
-    private Long changeVersion;
+  @NotNull private Long changeVersion;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private OffsetDateTime updatedAt;
+  @NotNull private OffsetDateTime updatedAt;
 
-    @NotNull
-    private UUID customer;
-
+  @NotNull private UUID customer;
 }

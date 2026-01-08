@@ -9,38 +9,32 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class WorkOrderPartDTO {
 
-    private UUID id;
+  private UUID id;
 
-    private String partNumber;
+  private String partNumber;
 
-    @NotNull
-    private String description;
+  @NotNull private String description;
 
-    @NotNull
-    @Digits(integer = 10, fraction = 2)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal quantity;
+  @NotNull
+  @Digits(integer = 10, fraction = 2)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal quantity;
 
-    @Digits(integer = 10, fraction = 2)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal unitPrice;
+  @Digits(integer = 10, fraction = 2)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal unitPrice;
 
-    @NotNull
-    private Long changeVersion;
+  @NotNull private Long changeVersion;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private UUID workOrder;
+  @NotNull private UUID workOrder;
 
-    private UUID part;
+  private UUID part;
 
-    private UUID recordedByUser;
-
+  private UUID recordedByUser;
 }

@@ -16,48 +16,46 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/engineerLastLocations", produces = MediaType.APPLICATION_JSON_VALUE)
 public class EngineerLastLocationResource {
 
-    private final EngineerLastLocationService engineerLastLocationService;
+  private final EngineerLastLocationService engineerLastLocationService;
 
-    public EngineerLastLocationResource(
-            final EngineerLastLocationService engineerLastLocationService) {
-        this.engineerLastLocationService = engineerLastLocationService;
-    }
+  public EngineerLastLocationResource(
+      final EngineerLastLocationService engineerLastLocationService) {
+    this.engineerLastLocationService = engineerLastLocationService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<EngineerLastLocationDTO>> getAllEngineerLastLocations() {
-        return ResponseEntity.ok(engineerLastLocationService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<EngineerLastLocationDTO>> getAllEngineerLastLocations() {
+    return ResponseEntity.ok(engineerLastLocationService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EngineerLastLocationDTO> getEngineerLastLocation(
-            @PathVariable(name = "id") final Long id) {
-        return ResponseEntity.ok(engineerLastLocationService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<EngineerLastLocationDTO> getEngineerLastLocation(
+      @PathVariable(name = "id") final Long id) {
+    return ResponseEntity.ok(engineerLastLocationService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<Long> createEngineerLastLocation(
-            @RequestBody @Valid final EngineerLastLocationDTO engineerLastLocationDTO) {
-        final Long createdId = engineerLastLocationService.create(engineerLastLocationDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<Long> createEngineerLastLocation(
+      @RequestBody @Valid final EngineerLastLocationDTO engineerLastLocationDTO) {
+    final Long createdId = engineerLastLocationService.create(engineerLastLocationDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Long> updateEngineerLastLocation(@PathVariable(name = "id") final Long id,
-            @RequestBody @Valid final EngineerLastLocationDTO engineerLastLocationDTO) {
-        engineerLastLocationService.update(id, engineerLastLocationDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<Long> updateEngineerLastLocation(
+      @PathVariable(name = "id") final Long id,
+      @RequestBody @Valid final EngineerLastLocationDTO engineerLastLocationDTO) {
+    engineerLastLocationService.update(id, engineerLastLocationDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEngineerLastLocation(
-            @PathVariable(name = "id") final Long id) {
-        engineerLastLocationService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteEngineerLastLocation(@PathVariable(name = "id") final Long id) {
+    engineerLastLocationService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

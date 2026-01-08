@@ -17,46 +17,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/syncConflicts", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SyncConflictResource {
 
-    private final SyncConflictService syncConflictService;
+  private final SyncConflictService syncConflictService;
 
-    public SyncConflictResource(final SyncConflictService syncConflictService) {
-        this.syncConflictService = syncConflictService;
-    }
+  public SyncConflictResource(final SyncConflictService syncConflictService) {
+    this.syncConflictService = syncConflictService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<SyncConflictDTO>> getAllSyncConflicts() {
-        return ResponseEntity.ok(syncConflictService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<SyncConflictDTO>> getAllSyncConflicts() {
+    return ResponseEntity.ok(syncConflictService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SyncConflictDTO> getSyncConflict(
-            @PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(syncConflictService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<SyncConflictDTO> getSyncConflict(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(syncConflictService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createSyncConflict(
-            @RequestBody @Valid final SyncConflictDTO syncConflictDTO) {
-        final UUID createdId = syncConflictService.create(syncConflictDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createSyncConflict(
+      @RequestBody @Valid final SyncConflictDTO syncConflictDTO) {
+    final UUID createdId = syncConflictService.create(syncConflictDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateSyncConflict(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final SyncConflictDTO syncConflictDTO) {
-        syncConflictService.update(id, syncConflictDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateSyncConflict(
+      @PathVariable(name = "id") final UUID id,
+      @RequestBody @Valid final SyncConflictDTO syncConflictDTO) {
+    syncConflictService.update(id, syncConflictDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSyncConflict(@PathVariable(name = "id") final UUID id) {
-        syncConflictService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteSyncConflict(@PathVariable(name = "id") final UUID id) {
+    syncConflictService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

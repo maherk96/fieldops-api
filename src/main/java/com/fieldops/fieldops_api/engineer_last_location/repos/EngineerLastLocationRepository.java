@@ -4,9 +4,7 @@ import com.fieldops.fieldops_api.engineer_last_location.domain.EngineerLastLocat
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-
 public interface EngineerLastLocationRepository extends JpaRepository<EngineerLastLocation, Long> {
 
-    EngineerLastLocation findFirstByEngineerUserId(UUID id);
-
+  EngineerLastLocation findFirstByEngineerUserId(UUID id);
 }

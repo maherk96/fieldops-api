@@ -6,34 +6,25 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class OfflineChangesLogDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    private String deviceId;
+  @NotNull private String deviceId;
 
-    @NotNull
-    private String tableName;
+  @NotNull private String tableName;
 
-    @NotNull
-    private UUID recordId;
+  @NotNull private UUID recordId;
 
-    @NotNull
-    private String operation;
+  @NotNull private String operation;
 
-    @NotNull
-    private String changes;
+  @NotNull private String changes;
 
-    private OffsetDateTime syncedAt;
+  private OffsetDateTime syncedAt;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private UUID user;
-
+  @NotNull private UUID user;
 }

@@ -17,44 +17,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/assets", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AssetResource {
 
-    private final AssetService assetService;
+  private final AssetService assetService;
 
-    public AssetResource(final AssetService assetService) {
-        this.assetService = assetService;
-    }
+  public AssetResource(final AssetService assetService) {
+    this.assetService = assetService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<AssetDTO>> getAllAssets() {
-        return ResponseEntity.ok(assetService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<AssetDTO>> getAllAssets() {
+    return ResponseEntity.ok(assetService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AssetDTO> getAsset(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(assetService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<AssetDTO> getAsset(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(assetService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createAsset(@RequestBody @Valid final AssetDTO assetDTO) {
-        final UUID createdId = assetService.create(assetDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createAsset(@RequestBody @Valid final AssetDTO assetDTO) {
+    final UUID createdId = assetService.create(assetDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateAsset(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final AssetDTO assetDTO) {
-        assetService.update(id, assetDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateAsset(
+      @PathVariable(name = "id") final UUID id, @RequestBody @Valid final AssetDTO assetDTO) {
+    assetService.update(id, assetDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAsset(@PathVariable(name = "id") final UUID id) {
-        assetService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteAsset(@PathVariable(name = "id") final UUID id) {
+    assetService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

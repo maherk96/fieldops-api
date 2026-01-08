@@ -6,38 +6,29 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class WorkOrderTimeEntryDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    private String entryType;
+  @NotNull private String entryType;
 
-    @NotNull
-    private OffsetDateTime startTime;
+  @NotNull private OffsetDateTime startTime;
 
-    private OffsetDateTime endTime;
+  private OffsetDateTime endTime;
 
-    private Integer durationMinutes;
+  private Integer durationMinutes;
 
-    private String notes;
+  private String notes;
 
-    @NotNull
-    private Long changeVersion;
+  @NotNull private Long changeVersion;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private OffsetDateTime updatedAt;
+  @NotNull private OffsetDateTime updatedAt;
 
-    @NotNull
-    private UUID workOrder;
+  @NotNull private UUID workOrder;
 
-    @NotNull
-    private UUID engineerUser;
-
+  @NotNull private UUID engineerUser;
 }

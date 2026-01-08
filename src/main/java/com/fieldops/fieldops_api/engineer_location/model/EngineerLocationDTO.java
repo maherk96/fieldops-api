@@ -9,34 +9,29 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class EngineerLocationDTO {
 
-    private UUID id;
+  private UUID id;
 
-    @NotNull
-    @Digits(integer = 10, fraction = 7)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal lat;
+  @NotNull
+  @Digits(integer = 10, fraction = 7)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal lat;
 
-    @NotNull
-    @Digits(integer = 10, fraction = 7)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal lng;
+  @NotNull
+  @Digits(integer = 10, fraction = 7)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal lng;
 
-    @Digits(integer = 8, fraction = 2)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private BigDecimal accuracyMeters;
+  @Digits(integer = 8, fraction = 2)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal accuracyMeters;
 
-    @NotNull
-    private OffsetDateTime recordedAt;
+  @NotNull private OffsetDateTime recordedAt;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private UUID engineerUser;
-
+  @NotNull private UUID engineerUser;
 }

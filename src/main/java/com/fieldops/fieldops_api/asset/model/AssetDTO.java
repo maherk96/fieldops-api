@@ -6,35 +6,27 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public class AssetDTO {
 
-    private UUID id;
+  private UUID id;
 
-    private String assetTag;
+  private String assetTag;
 
-    @AssetSerialNumberUnique
-    private String serialNumber;
+  @AssetSerialNumberUnique private String serialNumber;
 
-    private String manufacturer;
+  private String manufacturer;
 
-    private String model;
+  private String model;
 
-    @NotNull
-    private Integer version;
+  @NotNull private Integer version;
 
-    @NotNull
-    private Long changeVersion;
+  @NotNull private Long changeVersion;
 
-    @NotNull
-    private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime createdAt;
 
-    @NotNull
-    private OffsetDateTime updatedAt;
+  @NotNull private OffsetDateTime updatedAt;
 
-    @NotNull
-    private UUID location;
-
+  @NotNull private UUID location;
 }

@@ -17,45 +17,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/workOrders", produces = MediaType.APPLICATION_JSON_VALUE)
 public class WorkOrderResource {
 
-    private final WorkOrderService workOrderService;
+  private final WorkOrderService workOrderService;
 
-    public WorkOrderResource(final WorkOrderService workOrderService) {
-        this.workOrderService = workOrderService;
-    }
+  public WorkOrderResource(final WorkOrderService workOrderService) {
+    this.workOrderService = workOrderService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<WorkOrderDTO>> getAllWorkOrders() {
-        return ResponseEntity.ok(workOrderService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<WorkOrderDTO>> getAllWorkOrders() {
+    return ResponseEntity.ok(workOrderService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<WorkOrderDTO> getWorkOrder(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(workOrderService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<WorkOrderDTO> getWorkOrder(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(workOrderService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createWorkOrder(
-            @RequestBody @Valid final WorkOrderDTO workOrderDTO) {
-        final UUID createdId = workOrderService.create(workOrderDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createWorkOrder(@RequestBody @Valid final WorkOrderDTO workOrderDTO) {
+    final UUID createdId = workOrderService.create(workOrderDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateWorkOrder(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final WorkOrderDTO workOrderDTO) {
-        workOrderService.update(id, workOrderDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateWorkOrder(
+      @PathVariable(name = "id") final UUID id,
+      @RequestBody @Valid final WorkOrderDTO workOrderDTO) {
+    workOrderService.update(id, workOrderDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkOrder(@PathVariable(name = "id") final UUID id) {
-        workOrderService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteWorkOrder(@PathVariable(name = "id") final UUID id) {
+    workOrderService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }

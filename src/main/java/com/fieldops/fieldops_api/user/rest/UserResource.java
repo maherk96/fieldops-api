@@ -17,44 +17,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserResource {
 
-    private final UserService userService;
+  private final UserService userService;
 
-    public UserResource(final UserService userService) {
-        this.userService = userService;
-    }
+  public UserResource(final UserService userService) {
+    this.userService = userService;
+  }
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.findAll());
-    }
+  @GetMapping
+  public ResponseEntity<List<UserDTO>> getAllUsers() {
+    return ResponseEntity.ok(userService.findAll());
+  }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> getUser(@PathVariable(name = "id") final UUID id) {
-        return ResponseEntity.ok(userService.get(id));
-    }
+  @GetMapping("/{id}")
+  public ResponseEntity<UserDTO> getUser(@PathVariable(name = "id") final UUID id) {
+    return ResponseEntity.ok(userService.get(id));
+  }
 
-    @PostMapping
-    public ResponseEntity<UUID> createUser(@RequestBody @Valid final UserDTO userDTO) {
-        final UUID createdId = userService.create(userDTO);
-        return new ResponseEntity<>(createdId, HttpStatus.CREATED);
-    }
+  @PostMapping
+  public ResponseEntity<UUID> createUser(@RequestBody @Valid final UserDTO userDTO) {
+    final UUID createdId = userService.create(userDTO);
+    return new ResponseEntity<>(createdId, HttpStatus.CREATED);
+  }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UUID> updateUser(@PathVariable(name = "id") final UUID id,
-            @RequestBody @Valid final UserDTO userDTO) {
-        userService.update(id, userDTO);
-        return ResponseEntity.ok(id);
-    }
+  @PutMapping("/{id}")
+  public ResponseEntity<UUID> updateUser(
+      @PathVariable(name = "id") final UUID id, @RequestBody @Valid final UserDTO userDTO) {
+    userService.update(id, userDTO);
+    return ResponseEntity.ok(id);
+  }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable(name = "id") final UUID id) {
-        userService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteUser(@PathVariable(name = "id") final UUID id) {
+    userService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }
