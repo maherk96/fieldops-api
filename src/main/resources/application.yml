@@ -7,7 +7,7 @@ spring:
       ddl-auto: none
 
 jwt:
-  secret: ${JWT_SECRET:change-me}
+  secret: ${JWT_SECRET:9pjGycRjqYQ/xlLvTszcIkwG2lyUpoIoXJpLyWlT2TU=}
   expiration: ${JWT_EXPIRATION:86400000}
 
 error:

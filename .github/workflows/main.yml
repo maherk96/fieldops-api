@@ -31,7 +31,7 @@ jobs:
       SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/fieldops
       SPRING_DATASOURCE_USERNAME: fieldops
       SPRING_DATASOURCE_PASSWORD: fieldops
-      JWT_SECRET: github-ci-secret
+      JWT_SECRET: 9pjGycRjqYQ/xlLvTszcIkwG2lyUpoIoXJpLyWlT2TU=
       JWT_EXPIRATION: 86400000
 
     steps:
