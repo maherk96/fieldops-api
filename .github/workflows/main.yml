@@ -1,0 +1,57 @@
+name: FieldOps CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: 🧪 Build & Test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        ports: ['5432:5432']
+        env:
+          POSTGRES_DB: fieldops
+          POSTGRES_USER: fieldops
+          POSTGRES_PASSWORD: fieldops
+        options: >-
+          --health-cmd="pg_isready -U fieldops -d fieldops"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=20
+
+    env:
+      SPRING_PROFILES_ACTIVE: test
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/fieldops
+      SPRING_DATASOURCE_USERNAME: fieldops
+      SPRING_DATASOURCE_PASSWORD: fieldops
+      JWT_SECRET: github-ci-secret
+      JWT_EXPIRATION: 86400000
+
+    steps:
+      - name: 🧰 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: ☕ Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: 🧹 Code format check (Spotless)
+        run: ./gradlew spotlessCheck
+
+      - name: 🏗️ Build and test
+        run: ./gradlew clean build --info
+
+      - name: 📦 Archive build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fieldops-api-jar
+          path: build/libs/*.jar
