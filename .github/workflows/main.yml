@@ -5,14 +5,12 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   build:
     name: 🧪 Build & Test
     runs-on: ubuntu-latest
-
-
 
     services:
       postgres:
