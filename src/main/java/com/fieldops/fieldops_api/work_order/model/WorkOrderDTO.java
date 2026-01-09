@@ -12,43 +12,47 @@ public class WorkOrderDTO {
 
   private UUID id;
 
-  @NotNull private String workOrderNo;
-
-  @NotNull private String title;
-
-  private String description;
-
-  @NotNull private String priority;
-
-  @NotNull private String status;
-
-  private OffsetDateTime scheduledStart;
-
-  private OffsetDateTime scheduledEnd;
-
-  private Integer estimatedDurationMinutes;
+  private OffsetDateTime actualEnd;
 
   private OffsetDateTime actualStart;
 
-  private OffsetDateTime actualEnd;
+  @NotNull private Long changeVersion;
 
   private OffsetDateTime completedAt;
 
   private String completionNotes;
 
+  @NotNull private OffsetDateTime dateCreated;
+
   private OffsetDateTime deletedAt;
 
-  @NotNull private Integer version;
+  private String description;
 
-  @NotNull private Long changeVersion;
+  private Integer estimatedDurationMinutes;
 
-  @NotNull private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime lastUpdated;
+
+  @NotNull private String priority;
+
+  private OffsetDateTime scheduledEnd;
+
+  private OffsetDateTime scheduledStart;
+
+  @NotNull private String status;
+
+  @NotNull private String title;
 
   @NotNull private OffsetDateTime updatedAt;
 
-  @NotNull private UUID location;
+  @NotNull private Integer version;
 
-  private UUID asset;
+  @NotNull private String workOrderNo;
 
-  private UUID lastModifiedBy;
+  private UUID assetId;
+
+  private UUID lastModifiedById;
+
+  @NotNull private UUID locationId;
+
+  @NotNull private UUID organization;
 }

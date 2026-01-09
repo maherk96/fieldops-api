@@ -1,26 +1,14 @@
 package com.fieldops.fieldops_api.work_order.domain;
 
-import com.fieldops.fieldops_api.asset.domain.Asset;
-import com.fieldops.fieldops_api.attachment.domain.Attachment;
-import com.fieldops.fieldops_api.location.domain.Location;
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.work_order_assignment.domain.WorkOrderAssignment;
-import com.fieldops.fieldops_api.work_order_event.domain.WorkOrderEvent;
-import com.fieldops.fieldops_api.work_order_part.domain.WorkOrderPart;
-import com.fieldops.fieldops_api.work_order_signature.domain.WorkOrderSignature;
-import com.fieldops.fieldops_api.work_order_time_entry.domain.WorkOrderTimeEntry;
+import com.fieldops.fieldops_api.organization.domain.Organization;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,35 +24,16 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class WorkOrder {
 
   @Id
-  @Column(nullable = false, updatable = false)
-  @GeneratedValue
   @UuidGenerator
+  @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(nullable = false, columnDefinition = "text")
-  private String workOrderNo;
-
-  @Column(nullable = false, columnDefinition = "text")
-  private String title;
-
-  @Column(columnDefinition = "text")
-  private String description;
-
-  @Column(nullable = false, columnDefinition = "text")
-  private String priority;
-
-  @Column(nullable = false, columnDefinition = "text")
-  private String status;
-
-  @Column private OffsetDateTime scheduledStart;
-
-  @Column private OffsetDateTime scheduledEnd;
-
-  @Column private Integer estimatedDurationMinutes;
+  @Column private OffsetDateTime actualEnd;
 
   @Column private OffsetDateTime actualStart;
 
-  @Column private OffsetDateTime actualEnd;
+  @Column(nullable = false)
+  private Long changeVersion;
 
   @Column private OffsetDateTime completedAt;
 
@@ -73,47 +42,40 @@ public class WorkOrder {
 
   @Column private OffsetDateTime deletedAt;
 
+  @Column(columnDefinition = "text")
+  private String description;
+
+  @Column private Integer estimatedDurationMinutes;
+
+  @Column(nullable = false, columnDefinition = "text")
+  private String priority;
+
+  @Column private OffsetDateTime scheduledEnd;
+
+  @Column private OffsetDateTime scheduledStart;
+
+  @Column(nullable = false, columnDefinition = "text")
+  private String status;
+
+  @Column(nullable = false, columnDefinition = "text")
+  private String title;
+
   @Column(nullable = false)
   private Integer version;
 
-  @Column(nullable = false)
-  private Long changeVersion;
+  @Column(nullable = false, columnDefinition = "text")
+  private String workOrderNo;
+
+  @Column private UUID assetId;
+
+  @Column private UUID lastModifiedById;
 
   @Column(nullable = false)
-  private OffsetDateTime createdAt;
-
-  @Column(nullable = false)
-  private OffsetDateTime updatedAt;
+  private UUID locationId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "location_id", nullable = false)
-  private Location location;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "asset_id")
-  private Asset asset;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "last_modified_by_id")
-  private User lastModifiedBy;
-
-  @OneToMany(mappedBy = "workOrder")
-  private Set<WorkOrderAssignment> workOrderWorkOrderAssignments = new HashSet<>();
-
-  @OneToMany(mappedBy = "workOrder")
-  private Set<WorkOrderEvent> workOrderWorkOrderEvents = new HashSet<>();
-
-  @OneToMany(mappedBy = "workOrder")
-  private Set<Attachment> workOrderAttachments = new HashSet<>();
-
-  @OneToMany(mappedBy = "workOrder")
-  private Set<WorkOrderTimeEntry> workOrderWorkOrderTimeEntries = new HashSet<>();
-
-  @OneToMany(mappedBy = "workOrder")
-  private Set<WorkOrderPart> workOrderWorkOrderParts = new HashSet<>();
-
-  @OneToMany(mappedBy = "workOrder")
-  private Set<WorkOrderSignature> workOrderWorkOrderSignatures = new HashSet<>();
+  @JoinColumn(name = "organization_id", nullable = false)
+  private Organization organization;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)

@@ -3,9 +3,9 @@ package com.fieldops.fieldops_api.engineer_availability.service;
 import com.fieldops.fieldops_api.engineer_availability.domain.EngineerAvailability;
 import com.fieldops.fieldops_api.engineer_availability.model.EngineerAvailabilityDTO;
 import com.fieldops.fieldops_api.engineer_availability.repos.EngineerAvailabilityRepository;
-import com.fieldops.fieldops_api.events.BeforeDeleteUser;
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.user.repos.UserRepository;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 public class EngineerAvailabilityService {
 
   private final EngineerAvailabilityRepository engineerAvailabilityRepository;
-  private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
 
   public EngineerAvailabilityService(
       final EngineerAvailabilityRepository engineerAvailabilityRepository,
-      final UserRepository userRepository) {
+      final OrganizationRepository organizationRepository) {
     this.engineerAvailabilityRepository = engineerAvailabilityRepository;
-    this.userRepository = userRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<EngineerAvailabilityDTO> findAll() {
@@ -66,14 +66,16 @@ public class EngineerAvailabilityService {
       final EngineerAvailabilityDTO engineerAvailabilityDTO) {
     engineerAvailabilityDTO.setId(engineerAvailability.getId());
     engineerAvailabilityDTO.setAvailabilityType(engineerAvailability.getAvailabilityType());
-    engineerAvailabilityDTO.setStartTime(engineerAvailability.getStartTime());
+    engineerAvailabilityDTO.setDateCreated(engineerAvailability.getDateCreated());
     engineerAvailabilityDTO.setEndTime(engineerAvailability.getEndTime());
+    engineerAvailabilityDTO.setLastUpdated(engineerAvailability.getLastUpdated());
     engineerAvailabilityDTO.setNotes(engineerAvailability.getNotes());
-    engineerAvailabilityDTO.setCreatedAt(engineerAvailability.getCreatedAt());
-    engineerAvailabilityDTO.setEngineerUser(
-        engineerAvailability.getEngineerUser() == null
+    engineerAvailabilityDTO.setStartTime(engineerAvailability.getStartTime());
+    engineerAvailabilityDTO.setEngineerUserId(engineerAvailability.getEngineerUserId());
+    engineerAvailabilityDTO.setOrganization(
+        engineerAvailability.getOrganization() == null
             ? null
-            : engineerAvailability.getEngineerUser().getId());
+            : engineerAvailability.getOrganization().getId());
     return engineerAvailabilityDTO;
   }
 
@@ -81,28 +83,28 @@ public class EngineerAvailabilityService {
       final EngineerAvailabilityDTO engineerAvailabilityDTO,
       final EngineerAvailability engineerAvailability) {
     engineerAvailability.setAvailabilityType(engineerAvailabilityDTO.getAvailabilityType());
-    engineerAvailability.setStartTime(engineerAvailabilityDTO.getStartTime());
     engineerAvailability.setEndTime(engineerAvailabilityDTO.getEndTime());
     engineerAvailability.setNotes(engineerAvailabilityDTO.getNotes());
-    engineerAvailability.setCreatedAt(engineerAvailabilityDTO.getCreatedAt());
-    final User engineerUser =
-        engineerAvailabilityDTO.getEngineerUser() == null
+    engineerAvailability.setStartTime(engineerAvailabilityDTO.getStartTime());
+    engineerAvailability.setEngineerUserId(engineerAvailabilityDTO.getEngineerUserId());
+    final Organization organization =
+        engineerAvailabilityDTO.getOrganization() == null
             ? null
-            : userRepository
-                .findById(engineerAvailabilityDTO.getEngineerUser())
-                .orElseThrow(() -> new NotFoundException("engineerUser not found"));
-    engineerAvailability.setEngineerUser(engineerUser);
+            : organizationRepository
+                .findById(engineerAvailabilityDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    engineerAvailability.setOrganization(organization);
     return engineerAvailability;
   }
 
-  @EventListener(BeforeDeleteUser.class)
-  public void on(final BeforeDeleteUser event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final EngineerAvailability engineerUserEngineerAvailability =
-        engineerAvailabilityRepository.findFirstByEngineerUserId(event.getId());
-    if (engineerUserEngineerAvailability != null) {
-      referencedException.setKey("user.engineerAvailability.engineerUser.referenced");
-      referencedException.addParam(engineerUserEngineerAvailability.getId());
+    final EngineerAvailability organizationEngineerAvailability =
+        engineerAvailabilityRepository.findFirstByOrganizationId(event.getId());
+    if (organizationEngineerAvailability != null) {
+      referencedException.setKey("organization.engineerAvailability.organization.referenced");
+      referencedException.addParam(organizationEngineerAvailability.getId());
       throw referencedException;
     }
   }

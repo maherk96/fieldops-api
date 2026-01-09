@@ -1,11 +1,11 @@
 package com.fieldops.fieldops_api.offline_changes_log.service;
 
-import com.fieldops.fieldops_api.events.BeforeDeleteUser;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
 import com.fieldops.fieldops_api.offline_changes_log.domain.OfflineChangesLog;
 import com.fieldops.fieldops_api.offline_changes_log.model.OfflineChangesLogDTO;
 import com.fieldops.fieldops_api.offline_changes_log.repos.OfflineChangesLogRepository;
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.user.repos.UserRepository;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 public class OfflineChangesLogService {
 
   private final OfflineChangesLogRepository offlineChangesLogRepository;
-  private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
 
   public OfflineChangesLogService(
       final OfflineChangesLogRepository offlineChangesLogRepository,
-      final UserRepository userRepository) {
+      final OrganizationRepository organizationRepository) {
     this.offlineChangesLogRepository = offlineChangesLogRepository;
-    this.userRepository = userRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<OfflineChangesLogDTO> findAll() {
@@ -64,45 +64,49 @@ public class OfflineChangesLogService {
   private OfflineChangesLogDTO mapToDTO(
       final OfflineChangesLog offlineChangesLog, final OfflineChangesLogDTO offlineChangesLogDTO) {
     offlineChangesLogDTO.setId(offlineChangesLog.getId());
-    offlineChangesLogDTO.setDeviceId(offlineChangesLog.getDeviceId());
-    offlineChangesLogDTO.setTableName(offlineChangesLog.getTableName());
-    offlineChangesLogDTO.setRecordId(offlineChangesLog.getRecordId());
-    offlineChangesLogDTO.setOperation(offlineChangesLog.getOperation());
     offlineChangesLogDTO.setChanges(offlineChangesLog.getChanges());
+    offlineChangesLogDTO.setDateCreated(offlineChangesLog.getDateCreated());
+    offlineChangesLogDTO.setDeviceId(offlineChangesLog.getDeviceId());
+    offlineChangesLogDTO.setLastUpdated(offlineChangesLog.getLastUpdated());
+    offlineChangesLogDTO.setOperation(offlineChangesLog.getOperation());
+    offlineChangesLogDTO.setRecordId(offlineChangesLog.getRecordId());
     offlineChangesLogDTO.setSyncedAt(offlineChangesLog.getSyncedAt());
-    offlineChangesLogDTO.setCreatedAt(offlineChangesLog.getCreatedAt());
-    offlineChangesLogDTO.setUser(
-        offlineChangesLog.getUser() == null ? null : offlineChangesLog.getUser().getId());
+    offlineChangesLogDTO.setTableName(offlineChangesLog.getTableName());
+    offlineChangesLogDTO.setUserId(offlineChangesLog.getUserId());
+    offlineChangesLogDTO.setOrganization(
+        offlineChangesLog.getOrganization() == null
+            ? null
+            : offlineChangesLog.getOrganization().getId());
     return offlineChangesLogDTO;
   }
 
   private OfflineChangesLog mapToEntity(
       final OfflineChangesLogDTO offlineChangesLogDTO, final OfflineChangesLog offlineChangesLog) {
-    offlineChangesLog.setDeviceId(offlineChangesLogDTO.getDeviceId());
-    offlineChangesLog.setTableName(offlineChangesLogDTO.getTableName());
-    offlineChangesLog.setRecordId(offlineChangesLogDTO.getRecordId());
-    offlineChangesLog.setOperation(offlineChangesLogDTO.getOperation());
     offlineChangesLog.setChanges(offlineChangesLogDTO.getChanges());
+    offlineChangesLog.setDeviceId(offlineChangesLogDTO.getDeviceId());
+    offlineChangesLog.setOperation(offlineChangesLogDTO.getOperation());
+    offlineChangesLog.setRecordId(offlineChangesLogDTO.getRecordId());
     offlineChangesLog.setSyncedAt(offlineChangesLogDTO.getSyncedAt());
-    offlineChangesLog.setCreatedAt(offlineChangesLogDTO.getCreatedAt());
-    final User user =
-        offlineChangesLogDTO.getUser() == null
+    offlineChangesLog.setTableName(offlineChangesLogDTO.getTableName());
+    offlineChangesLog.setUserId(offlineChangesLogDTO.getUserId());
+    final Organization organization =
+        offlineChangesLogDTO.getOrganization() == null
             ? null
-            : userRepository
-                .findById(offlineChangesLogDTO.getUser())
-                .orElseThrow(() -> new NotFoundException("user not found"));
-    offlineChangesLog.setUser(user);
+            : organizationRepository
+                .findById(offlineChangesLogDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    offlineChangesLog.setOrganization(organization);
     return offlineChangesLog;
   }
 
-  @EventListener(BeforeDeleteUser.class)
-  public void on(final BeforeDeleteUser event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final OfflineChangesLog userOfflineChangesLog =
-        offlineChangesLogRepository.findFirstByUserId(event.getId());
-    if (userOfflineChangesLog != null) {
-      referencedException.setKey("user.offlineChangesLog.user.referenced");
-      referencedException.addParam(userOfflineChangesLog.getId());
+    final OfflineChangesLog organizationOfflineChangesLog =
+        offlineChangesLogRepository.findFirstByOrganizationId(event.getId());
+    if (organizationOfflineChangesLog != null) {
+      referencedException.setKey("organization.offlineChangesLog.organization.referenced");
+      referencedException.addParam(organizationOfflineChangesLog.getId());
       throw referencedException;
     }
   }

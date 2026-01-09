@@ -3,7 +3,10 @@ package com.fieldops.fieldops_api.audit_log.service;
 import com.fieldops.fieldops_api.audit_log.domain.AuditLog;
 import com.fieldops.fieldops_api.audit_log.model.AuditLogDTO;
 import com.fieldops.fieldops_api.audit_log.repos.AuditLogRepository;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
 import com.fieldops.fieldops_api.events.BeforeDeleteUser;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.user.domain.User;
 import com.fieldops.fieldops_api.user.repos.UserRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
@@ -19,11 +22,15 @@ public class AuditLogService {
 
   private final AuditLogRepository auditLogRepository;
   private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
 
   public AuditLogService(
-      final AuditLogRepository auditLogRepository, final UserRepository userRepository) {
+      final AuditLogRepository auditLogRepository,
+      final UserRepository userRepository,
+      final OrganizationRepository organizationRepository) {
     this.auditLogRepository = auditLogRepository;
     this.userRepository = userRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<AuditLogDTO> findAll() {
@@ -57,30 +64,32 @@ public class AuditLogService {
 
   private AuditLogDTO mapToDTO(final AuditLog auditLog, final AuditLogDTO auditLogDTO) {
     auditLogDTO.setId(auditLog.getId());
-    auditLogDTO.setTableName(auditLog.getTableName());
-    auditLogDTO.setRecordId(auditLog.getRecordId());
-    auditLogDTO.setOperation(auditLog.getOperation());
-    auditLogDTO.setOldValues(auditLog.getOldValues());
-    auditLogDTO.setNewValues(auditLog.getNewValues());
-    auditLogDTO.setChangedAt(auditLog.getChangedAt());
-    auditLogDTO.setIpAddress(auditLog.getIpAddress());
-    auditLogDTO.setUserAgent(auditLog.getUserAgent());
+    auditLogDTO.setDateCreated(auditLog.getDateCreated());
     auditLogDTO.setDeviceId(auditLog.getDeviceId());
+    auditLogDTO.setIpAddress(auditLog.getIpAddress());
+    auditLogDTO.setLastUpdated(auditLog.getLastUpdated());
+    auditLogDTO.setNewValues(auditLog.getNewValues());
+    auditLogDTO.setOldValues(auditLog.getOldValues());
+    auditLogDTO.setOperation(auditLog.getOperation());
+    auditLogDTO.setRecordId(auditLog.getRecordId());
+    auditLogDTO.setTableName(auditLog.getTableName());
+    auditLogDTO.setUserAgent(auditLog.getUserAgent());
     auditLogDTO.setChangedByUser(
         auditLog.getChangedByUser() == null ? null : auditLog.getChangedByUser().getId());
+    auditLogDTO.setOrganization(
+        auditLog.getOrganization() == null ? null : auditLog.getOrganization().getId());
     return auditLogDTO;
   }
 
   private AuditLog mapToEntity(final AuditLogDTO auditLogDTO, final AuditLog auditLog) {
-    auditLog.setTableName(auditLogDTO.getTableName());
-    auditLog.setRecordId(auditLogDTO.getRecordId());
-    auditLog.setOperation(auditLogDTO.getOperation());
-    auditLog.setOldValues(auditLogDTO.getOldValues());
-    auditLog.setNewValues(auditLogDTO.getNewValues());
-    auditLog.setChangedAt(auditLogDTO.getChangedAt());
-    auditLog.setIpAddress(auditLogDTO.getIpAddress());
-    auditLog.setUserAgent(auditLogDTO.getUserAgent());
     auditLog.setDeviceId(auditLogDTO.getDeviceId());
+    auditLog.setIpAddress(auditLogDTO.getIpAddress());
+    auditLog.setNewValues(auditLogDTO.getNewValues());
+    auditLog.setOldValues(auditLogDTO.getOldValues());
+    auditLog.setOperation(auditLogDTO.getOperation());
+    auditLog.setRecordId(auditLogDTO.getRecordId());
+    auditLog.setTableName(auditLogDTO.getTableName());
+    auditLog.setUserAgent(auditLogDTO.getUserAgent());
     final User changedByUser =
         auditLogDTO.getChangedByUser() == null
             ? null
@@ -88,6 +97,13 @@ public class AuditLogService {
                 .findById(auditLogDTO.getChangedByUser())
                 .orElseThrow(() -> new NotFoundException("changedByUser not found"));
     auditLog.setChangedByUser(changedByUser);
+    final Organization organization =
+        auditLogDTO.getOrganization() == null
+            ? null
+            : organizationRepository
+                .findById(auditLogDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    auditLog.setOrganization(organization);
     return auditLog;
   }
 
@@ -99,6 +115,18 @@ public class AuditLogService {
     if (changedByUserAuditLog != null) {
       referencedException.setKey("user.auditLog.changedByUser.referenced");
       referencedException.addParam(changedByUserAuditLog.getId());
+      throw referencedException;
+    }
+  }
+
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
+    final ReferencedException referencedException = new ReferencedException();
+    final AuditLog organizationAuditLog =
+        auditLogRepository.findFirstByOrganizationId(event.getId());
+    if (organizationAuditLog != null) {
+      referencedException.setKey("organization.auditLog.organization.referenced");
+      referencedException.addParam(organizationAuditLog.getId());
       throw referencedException;
     }
   }

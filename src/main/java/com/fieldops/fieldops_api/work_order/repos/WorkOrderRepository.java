@@ -6,9 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkOrderRepository extends JpaRepository<WorkOrder, UUID> {
 
-  WorkOrder findFirstByLocationId(UUID id);
-
-  WorkOrder findFirstByAssetId(UUID id);
-
-  WorkOrder findFirstByLastModifiedById(UUID id);
+  WorkOrder findFirstByOrganizationId(UUID id);
 }

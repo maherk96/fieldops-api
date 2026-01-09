@@ -1,12 +1,10 @@
 package com.fieldops.fieldops_api.work_order_time_entry.domain;
 
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.work_order.domain.WorkOrder;
+import com.fieldops.fieldops_api.organization.domain.Organization;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -26,40 +24,38 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class WorkOrderTimeEntry {
 
   @Id
-  @Column(nullable = false, updatable = false)
-  @GeneratedValue
   @UuidGenerator
+  @Column(nullable = false, updatable = false)
   private UUID id;
 
-  @Column(nullable = false, columnDefinition = "text")
-  private String entryType;
-
   @Column(nullable = false)
-  private OffsetDateTime startTime;
+  private Long changeVersion;
+
+  @Column private Integer durationMinutes;
 
   @Column private OffsetDateTime endTime;
 
-  @Column private Integer durationMinutes;
+  @Column(nullable = false, columnDefinition = "text")
+  private String entryType;
 
   @Column(columnDefinition = "text")
   private String notes;
 
   @Column(nullable = false)
-  private Long changeVersion;
-
-  @Column(nullable = false)
-  private OffsetDateTime createdAt;
+  private OffsetDateTime startTime;
 
   @Column(nullable = false)
   private OffsetDateTime updatedAt;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "work_order_id", nullable = false)
-  private WorkOrder workOrder;
+  @Column(nullable = false)
+  private UUID engineerUserId;
+
+  @Column(nullable = false)
+  private UUID workOrderId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "engineer_user_id", nullable = false)
-  private User engineerUser;
+  @JoinColumn(name = "organization_id", nullable = false)
+  private Organization organization;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)

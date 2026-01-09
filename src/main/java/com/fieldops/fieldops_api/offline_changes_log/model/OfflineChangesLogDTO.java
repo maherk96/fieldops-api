@@ -12,19 +12,23 @@ public class OfflineChangesLogDTO {
 
   private UUID id;
 
+  @NotNull private String changes;
+
+  @NotNull private OffsetDateTime dateCreated;
+
   @NotNull private String deviceId;
 
-  @NotNull private String tableName;
-
-  @NotNull private UUID recordId;
+  @NotNull private OffsetDateTime lastUpdated;
 
   @NotNull private String operation;
 
-  @NotNull private String changes;
+  @NotNull private UUID recordId;
 
   private OffsetDateTime syncedAt;
 
-  @NotNull private OffsetDateTime createdAt;
+  @NotNull private String tableName;
 
-  @NotNull private UUID user;
+  @NotNull private UUID userId;
+
+  @NotNull private UUID organization;
 }

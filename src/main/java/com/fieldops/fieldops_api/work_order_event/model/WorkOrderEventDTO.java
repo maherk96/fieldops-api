@@ -12,19 +12,23 @@ public class WorkOrderEventDTO {
 
   private UUID id;
 
-  @NotNull private String eventType;
-
   @NotNull private UUID clientEventId;
 
+  @NotNull private OffsetDateTime dateCreated;
+
   private String deviceId;
+
+  @NotNull private String eventType;
+
+  @NotNull private OffsetDateTime lastUpdated;
 
   @NotNull private String payload;
 
   private OffsetDateTime syncedAt;
 
-  @NotNull private OffsetDateTime createdAt;
+  private UUID createdByUserId;
 
-  @NotNull private UUID workOrder;
+  @NotNull private UUID workOrderId;
 
-  private UUID createdByUser;
+  @NotNull private UUID organization;
 }

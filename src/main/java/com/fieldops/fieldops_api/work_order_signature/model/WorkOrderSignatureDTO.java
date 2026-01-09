@@ -12,15 +12,19 @@ public class WorkOrderSignatureDTO {
 
   private UUID id;
 
+  @NotNull private OffsetDateTime dateCreated;
+
+  @NotNull private OffsetDateTime lastUpdated;
+
   @NotNull private String signatureType;
+
+  @NotNull private OffsetDateTime signedAt;
 
   @NotNull private String signerName;
 
   @NotNull private String storageKey;
 
-  @NotNull private OffsetDateTime signedAt;
+  @NotNull private UUID workOrderId;
 
-  @NotNull private OffsetDateTime createdAt;
-
-  @NotNull private UUID workOrder;
+  @NotNull private UUID organization;
 }

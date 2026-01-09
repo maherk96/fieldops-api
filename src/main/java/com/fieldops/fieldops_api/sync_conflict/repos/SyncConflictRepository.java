@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SyncConflictRepository extends JpaRepository<SyncConflict, UUID> {
 
-  SyncConflict findFirstByResolvedByUserId(UUID id);
+  SyncConflict findFirstByOrganizationId(UUID id);
 }

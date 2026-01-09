@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkOrderSignatureRepository extends JpaRepository<WorkOrderSignature, UUID> {
 
-  WorkOrderSignature findFirstByWorkOrderId(UUID id);
+  WorkOrderSignature findFirstByOrganizationId(UUID id);
 }

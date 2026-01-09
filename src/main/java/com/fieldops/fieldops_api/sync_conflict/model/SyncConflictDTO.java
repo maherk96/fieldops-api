@@ -12,29 +12,33 @@ public class SyncConflictDTO {
 
   private UUID id;
 
-  @NotNull private String deviceId;
-
-  @NotNull private String tableName;
-
-  @NotNull private UUID recordId;
-
   @NotNull private String conflictType;
 
-  private Integer localVersion;
+  @NotNull private OffsetDateTime dateCreated;
 
-  private Integer serverVersion;
+  @NotNull private String deviceId;
+
+  @NotNull private OffsetDateTime lastUpdated;
 
   @NotNull private String localData;
 
-  private String serverData;
+  private Integer localVersion;
 
-  @NotNull private Boolean resolved;
+  @NotNull private UUID recordId;
 
   private String resolutionStrategy;
 
+  @NotNull private Boolean resolved;
+
   private OffsetDateTime resolvedAt;
 
-  @NotNull private OffsetDateTime createdAt;
+  private String serverData;
 
-  private UUID resolvedByUser;
+  private Integer serverVersion;
+
+  @NotNull private String tableName;
+
+  private UUID resolvedByUserId;
+
+  @NotNull private UUID organization;
 }

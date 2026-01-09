@@ -1,11 +1,11 @@
 package com.fieldops.fieldops_api.sync_queue.service;
 
-import com.fieldops.fieldops_api.events.BeforeDeleteUser;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.sync_queue.domain.SyncQueue;
 import com.fieldops.fieldops_api.sync_queue.model.SyncQueueDTO;
 import com.fieldops.fieldops_api.sync_queue.repos.SyncQueueRepository;
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.user.repos.UserRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
@@ -18,12 +18,13 @@ import org.springframework.stereotype.Service;
 public class SyncQueueService {
 
   private final SyncQueueRepository syncQueueRepository;
-  private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
 
   public SyncQueueService(
-      final SyncQueueRepository syncQueueRepository, final UserRepository userRepository) {
+      final SyncQueueRepository syncQueueRepository,
+      final OrganizationRepository organizationRepository) {
     this.syncQueueRepository = syncQueueRepository;
-    this.userRepository = userRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<SyncQueueDTO> findAll() {
@@ -59,50 +60,55 @@ public class SyncQueueService {
 
   private SyncQueueDTO mapToDTO(final SyncQueue syncQueue, final SyncQueueDTO syncQueueDTO) {
     syncQueueDTO.setId(syncQueue.getId());
+    syncQueueDTO.setDateCreated(syncQueue.getDateCreated());
     syncQueueDTO.setDeviceId(syncQueue.getDeviceId());
-    syncQueueDTO.setOperationType(syncQueue.getOperationType());
-    syncQueueDTO.setTableName(syncQueue.getTableName());
-    syncQueueDTO.setRecordId(syncQueue.getRecordId());
-    syncQueueDTO.setPayload(syncQueue.getPayload());
-    syncQueueDTO.setRetryCount(syncQueue.getRetryCount());
     syncQueueDTO.setLastError(syncQueue.getLastError());
+    syncQueueDTO.setLastUpdated(syncQueue.getLastUpdated());
     syncQueueDTO.setNextRetryAt(syncQueue.getNextRetryAt());
+    syncQueueDTO.setOperationType(syncQueue.getOperationType());
+    syncQueueDTO.setPayload(syncQueue.getPayload());
+    syncQueueDTO.setRecordId(syncQueue.getRecordId());
+    syncQueueDTO.setRetryCount(syncQueue.getRetryCount());
     syncQueueDTO.setStatus(syncQueue.getStatus());
-    syncQueueDTO.setCreatedAt(syncQueue.getCreatedAt());
+    syncQueueDTO.setTableName(syncQueue.getTableName());
     syncQueueDTO.setUpdatedAt(syncQueue.getUpdatedAt());
-    syncQueueDTO.setUser(syncQueue.getUser() == null ? null : syncQueue.getUser().getId());
+    syncQueueDTO.setUserId(syncQueue.getUserId());
+    syncQueueDTO.setOrganization(
+        syncQueue.getOrganization() == null ? null : syncQueue.getOrganization().getId());
     return syncQueueDTO;
   }
 
   private SyncQueue mapToEntity(final SyncQueueDTO syncQueueDTO, final SyncQueue syncQueue) {
+
     syncQueue.setDeviceId(syncQueueDTO.getDeviceId());
-    syncQueue.setOperationType(syncQueueDTO.getOperationType());
-    syncQueue.setTableName(syncQueueDTO.getTableName());
-    syncQueue.setRecordId(syncQueueDTO.getRecordId());
-    syncQueue.setPayload(syncQueueDTO.getPayload());
-    syncQueue.setRetryCount(syncQueueDTO.getRetryCount());
     syncQueue.setLastError(syncQueueDTO.getLastError());
     syncQueue.setNextRetryAt(syncQueueDTO.getNextRetryAt());
+    syncQueue.setOperationType(syncQueueDTO.getOperationType());
+    syncQueue.setPayload(syncQueueDTO.getPayload());
+    syncQueue.setRecordId(syncQueueDTO.getRecordId());
+    syncQueue.setRetryCount(syncQueueDTO.getRetryCount());
     syncQueue.setStatus(syncQueueDTO.getStatus());
-    syncQueue.setCreatedAt(syncQueueDTO.getCreatedAt());
+    syncQueue.setTableName(syncQueueDTO.getTableName());
     syncQueue.setUpdatedAt(syncQueueDTO.getUpdatedAt());
-    final User user =
-        syncQueueDTO.getUser() == null
+    syncQueue.setUserId(syncQueueDTO.getUserId());
+    final Organization organization =
+        syncQueueDTO.getOrganization() == null
             ? null
-            : userRepository
-                .findById(syncQueueDTO.getUser())
-                .orElseThrow(() -> new NotFoundException("user not found"));
-    syncQueue.setUser(user);
+            : organizationRepository
+                .findById(syncQueueDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    syncQueue.setOrganization(organization);
     return syncQueue;
   }
 
-  @EventListener(BeforeDeleteUser.class)
-  public void on(final BeforeDeleteUser event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final SyncQueue userSyncQueue = syncQueueRepository.findFirstByUserId(event.getId());
-    if (userSyncQueue != null) {
-      referencedException.setKey("user.syncQueue.user.referenced");
-      referencedException.addParam(userSyncQueue.getId());
+    final SyncQueue organizationSyncQueue =
+        syncQueueRepository.findFirstByOrganizationId(event.getId());
+    if (organizationSyncQueue != null) {
+      referencedException.setKey("organization.syncQueue.organization.referenced");
+      referencedException.addParam(organizationSyncQueue.getId());
       throw referencedException;
     }
   }

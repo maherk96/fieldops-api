@@ -15,21 +15,21 @@ public class LocationDTO {
 
   private UUID id;
 
-  @NotNull private String name;
-
   private String addressLine1;
 
   private String addressLine2;
 
+  @NotNull private Long changeVersion;
+
   private String city;
 
-  private String region;
-
-  private String postcode;
+  private String contactPhone;
 
   private String country;
 
-  private String contactPhone;
+  @NotNull private OffsetDateTime dateCreated;
+
+  @NotNull private OffsetDateTime lastUpdated;
 
   @Digits(integer = 10, fraction = 7)
   @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -39,13 +39,17 @@ public class LocationDTO {
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   private BigDecimal lng;
 
-  @NotNull private Integer version;
+  @NotNull private String name;
 
-  @NotNull private Long changeVersion;
+  private String postcode;
 
-  @NotNull private OffsetDateTime createdAt;
+  private String region;
 
   @NotNull private OffsetDateTime updatedAt;
 
-  @NotNull private UUID customer;
+  @NotNull private Integer version;
+
+  @NotNull private UUID customerId;
+
+  @NotNull private UUID organization;
 }

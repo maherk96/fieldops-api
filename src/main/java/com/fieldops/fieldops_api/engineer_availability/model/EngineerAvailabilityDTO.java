@@ -14,13 +14,17 @@ public class EngineerAvailabilityDTO {
 
   @NotNull private String availabilityType;
 
-  @NotNull private OffsetDateTime startTime;
+  @NotNull private OffsetDateTime dateCreated;
 
   @NotNull private OffsetDateTime endTime;
 
+  @NotNull private OffsetDateTime lastUpdated;
+
   private String notes;
 
-  @NotNull private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime startTime;
 
-  @NotNull private UUID engineerUser;
+  @NotNull private UUID engineerUserId;
+
+  @NotNull private UUID organization;
 }

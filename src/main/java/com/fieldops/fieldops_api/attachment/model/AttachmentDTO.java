@@ -14,23 +14,27 @@ public class AttachmentDTO {
 
   private String attachmentType;
 
-  @NotNull private String storageKey;
+  @NotNull private OffsetDateTime dateCreated;
 
   @NotNull private String fileName;
+
+  @NotNull private OffsetDateTime lastUpdated;
 
   private String mimeType;
 
   private Long sizeBytes;
 
+  @NotNull private String storageKey;
+
   @NotNull private String uploadStatus;
 
   private String uploadedFromDevice;
 
-  @NotNull private OffsetDateTime createdAt;
+  private UUID eventId;
 
-  @NotNull private UUID workOrder;
+  private UUID uploadedByUserId;
 
-  private UUID event;
+  @NotNull private UUID workOrderId;
 
-  private UUID uploadedByUser;
+  @NotNull private UUID organization;
 }

@@ -12,17 +12,21 @@ public class CustomerDTO {
 
   private UUID id;
 
-  @NotNull private String name;
+  @NotNull private Long changeVersion;
+
+  @NotNull private OffsetDateTime dateCreated;
 
   private String externalRef;
 
+  @NotNull private OffsetDateTime lastUpdated;
+
+  @NotNull private String name;
+
   private String phone;
+
+  @NotNull private OffsetDateTime updatedAt;
 
   @NotNull private Integer version;
 
-  @NotNull private Long changeVersion;
-
-  @NotNull private OffsetDateTime createdAt;
-
-  @NotNull private OffsetDateTime updatedAt;
+  @NotNull private UUID organization;
 }

@@ -6,7 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkOrderEventRepository extends JpaRepository<WorkOrderEvent, UUID> {
 
-  WorkOrderEvent findFirstByWorkOrderId(UUID id);
-
-  WorkOrderEvent findFirstByCreatedByUserId(UUID id);
+  WorkOrderEvent findFirstByOrganizationId(UUID id);
 }

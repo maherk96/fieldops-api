@@ -15,6 +15,14 @@ public class EngineerLastLocationDTO {
 
   private Long id;
 
+  @Digits(integer = 8, fraction = 2)
+  @JsonFormat(shape = JsonFormat.Shape.STRING)
+  private BigDecimal accuracyMeters;
+
+  @NotNull private OffsetDateTime dateCreated;
+
+  @NotNull private OffsetDateTime lastUpdated;
+
   @NotNull
   @Digits(integer = 10, fraction = 7)
   @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -25,13 +33,11 @@ public class EngineerLastLocationDTO {
   @JsonFormat(shape = JsonFormat.Shape.STRING)
   private BigDecimal lng;
 
-  @Digits(integer = 8, fraction = 2)
-  @JsonFormat(shape = JsonFormat.Shape.STRING)
-  private BigDecimal accuracyMeters;
-
   @NotNull private OffsetDateTime recordedAt;
 
   @NotNull private OffsetDateTime updatedAt;
 
-  private UUID engineerUser;
+  private UUID engineerUserId;
+
+  @NotNull private UUID organization;
 }

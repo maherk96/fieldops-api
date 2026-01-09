@@ -3,9 +3,9 @@ package com.fieldops.fieldops_api.device_sync_state.service;
 import com.fieldops.fieldops_api.device_sync_state.domain.DeviceSyncState;
 import com.fieldops.fieldops_api.device_sync_state.model.DeviceSyncStateDTO;
 import com.fieldops.fieldops_api.device_sync_state.repos.DeviceSyncStateRepository;
-import com.fieldops.fieldops_api.events.BeforeDeleteUser;
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.user.repos.UserRepository;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 public class DeviceSyncStateService {
 
   private final DeviceSyncStateRepository deviceSyncStateRepository;
-  private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
 
   public DeviceSyncStateService(
       final DeviceSyncStateRepository deviceSyncStateRepository,
-      final UserRepository userRepository) {
+      final OrganizationRepository organizationRepository) {
     this.deviceSyncStateRepository = deviceSyncStateRepository;
-    this.userRepository = userRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<DeviceSyncStateDTO> findAll() {
@@ -63,43 +63,47 @@ public class DeviceSyncStateService {
   private DeviceSyncStateDTO mapToDTO(
       final DeviceSyncState deviceSyncState, final DeviceSyncStateDTO deviceSyncStateDTO) {
     deviceSyncStateDTO.setId(deviceSyncState.getId());
+    deviceSyncStateDTO.setDateCreated(deviceSyncState.getDateCreated());
     deviceSyncStateDTO.setDeviceId(deviceSyncState.getDeviceId());
-    deviceSyncStateDTO.setTableName(deviceSyncState.getTableName());
     deviceSyncStateDTO.setLastChangeVersion(deviceSyncState.getLastChangeVersion());
     deviceSyncStateDTO.setLastSyncAt(deviceSyncState.getLastSyncAt());
-    deviceSyncStateDTO.setCreatedAt(deviceSyncState.getCreatedAt());
+    deviceSyncStateDTO.setLastUpdated(deviceSyncState.getLastUpdated());
+    deviceSyncStateDTO.setTableName(deviceSyncState.getTableName());
     deviceSyncStateDTO.setUpdatedAt(deviceSyncState.getUpdatedAt());
-    deviceSyncStateDTO.setUser(
-        deviceSyncState.getUser() == null ? null : deviceSyncState.getUser().getId());
+    deviceSyncStateDTO.setUserId(deviceSyncState.getUserId());
+    deviceSyncStateDTO.setOrganization(
+        deviceSyncState.getOrganization() == null
+            ? null
+            : deviceSyncState.getOrganization().getId());
     return deviceSyncStateDTO;
   }
 
   private DeviceSyncState mapToEntity(
       final DeviceSyncStateDTO deviceSyncStateDTO, final DeviceSyncState deviceSyncState) {
     deviceSyncState.setDeviceId(deviceSyncStateDTO.getDeviceId());
-    deviceSyncState.setTableName(deviceSyncStateDTO.getTableName());
     deviceSyncState.setLastChangeVersion(deviceSyncStateDTO.getLastChangeVersion());
     deviceSyncState.setLastSyncAt(deviceSyncStateDTO.getLastSyncAt());
-    deviceSyncState.setCreatedAt(deviceSyncStateDTO.getCreatedAt());
+    deviceSyncState.setTableName(deviceSyncStateDTO.getTableName());
     deviceSyncState.setUpdatedAt(deviceSyncStateDTO.getUpdatedAt());
-    final User user =
-        deviceSyncStateDTO.getUser() == null
+    deviceSyncState.setUserId(deviceSyncStateDTO.getUserId());
+    final Organization organization =
+        deviceSyncStateDTO.getOrganization() == null
             ? null
-            : userRepository
-                .findById(deviceSyncStateDTO.getUser())
-                .orElseThrow(() -> new NotFoundException("user not found"));
-    deviceSyncState.setUser(user);
+            : organizationRepository
+                .findById(deviceSyncStateDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    deviceSyncState.setOrganization(organization);
     return deviceSyncState;
   }
 
-  @EventListener(BeforeDeleteUser.class)
-  public void on(final BeforeDeleteUser event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final DeviceSyncState userDeviceSyncState =
-        deviceSyncStateRepository.findFirstByUserId(event.getId());
-    if (userDeviceSyncState != null) {
-      referencedException.setKey("user.deviceSyncState.user.referenced");
-      referencedException.addParam(userDeviceSyncState.getId());
+    final DeviceSyncState organizationDeviceSyncState =
+        deviceSyncStateRepository.findFirstByOrganizationId(event.getId());
+    if (organizationDeviceSyncState != null) {
+      referencedException.setKey("organization.deviceSyncState.organization.referenced");
+      referencedException.addParam(organizationDeviceSyncState.getId());
       throw referencedException;
     }
   }

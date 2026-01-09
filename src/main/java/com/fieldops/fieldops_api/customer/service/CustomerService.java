@@ -3,11 +3,14 @@ package com.fieldops.fieldops_api.customer.service;
 import com.fieldops.fieldops_api.customer.domain.Customer;
 import com.fieldops.fieldops_api.customer.model.CustomerDTO;
 import com.fieldops.fieldops_api.customer.repos.CustomerRepository;
-import com.fieldops.fieldops_api.events.BeforeDeleteCustomer;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
+import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +18,13 @@ import org.springframework.stereotype.Service;
 public class CustomerService {
 
   private final CustomerRepository customerRepository;
-  private final ApplicationEventPublisher publisher;
+  private final OrganizationRepository organizationRepository;
 
   public CustomerService(
-      final CustomerRepository customerRepository, final ApplicationEventPublisher publisher) {
+      final CustomerRepository customerRepository,
+      final OrganizationRepository organizationRepository) {
     this.customerRepository = customerRepository;
-    this.publisher = publisher;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<CustomerDTO> findAll() {
@@ -49,30 +53,50 @@ public class CustomerService {
 
   public void delete(final UUID id) {
     final Customer customer = customerRepository.findById(id).orElseThrow(NotFoundException::new);
-    publisher.publishEvent(new BeforeDeleteCustomer(id));
     customerRepository.delete(customer);
   }
 
   private CustomerDTO mapToDTO(final Customer customer, final CustomerDTO customerDTO) {
     customerDTO.setId(customer.getId());
-    customerDTO.setName(customer.getName());
-    customerDTO.setExternalRef(customer.getExternalRef());
-    customerDTO.setPhone(customer.getPhone());
-    customerDTO.setVersion(customer.getVersion());
     customerDTO.setChangeVersion(customer.getChangeVersion());
-    customerDTO.setCreatedAt(customer.getCreatedAt());
+    customerDTO.setDateCreated(customer.getDateCreated());
+    customerDTO.setExternalRef(customer.getExternalRef());
+    customerDTO.setLastUpdated(customer.getLastUpdated());
+    customerDTO.setName(customer.getName());
+    customerDTO.setPhone(customer.getPhone());
     customerDTO.setUpdatedAt(customer.getUpdatedAt());
+    customerDTO.setVersion(customer.getVersion());
+    customerDTO.setOrganization(
+        customer.getOrganization() == null ? null : customer.getOrganization().getId());
     return customerDTO;
   }
 
   private Customer mapToEntity(final CustomerDTO customerDTO, final Customer customer) {
-    customer.setName(customerDTO.getName());
-    customer.setExternalRef(customerDTO.getExternalRef());
-    customer.setPhone(customerDTO.getPhone());
-    customer.setVersion(customerDTO.getVersion());
     customer.setChangeVersion(customerDTO.getChangeVersion());
-    customer.setCreatedAt(customerDTO.getCreatedAt());
+    customer.setExternalRef(customerDTO.getExternalRef());
+    customer.setName(customerDTO.getName());
+    customer.setPhone(customerDTO.getPhone());
     customer.setUpdatedAt(customerDTO.getUpdatedAt());
+    customer.setVersion(customerDTO.getVersion());
+    final Organization organization =
+        customerDTO.getOrganization() == null
+            ? null
+            : organizationRepository
+                .findById(customerDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    customer.setOrganization(organization);
     return customer;
+  }
+
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
+    final ReferencedException referencedException = new ReferencedException();
+    final Customer organizationCustomer =
+        customerRepository.findFirstByOrganizationId(event.getId());
+    if (organizationCustomer != null) {
+      referencedException.setKey("organization.customer.organization.referenced");
+      referencedException.addParam(organizationCustomer.getId());
+      throw referencedException;
+    }
   }
 }

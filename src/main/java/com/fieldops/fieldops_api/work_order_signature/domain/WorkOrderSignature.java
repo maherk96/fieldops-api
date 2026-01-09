@@ -1,11 +1,10 @@
 package com.fieldops.fieldops_api.work_order_signature.domain;
 
-import com.fieldops.fieldops_api.work_order.domain.WorkOrder;
+import com.fieldops.fieldops_api.organization.domain.Organization;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -25,13 +24,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class WorkOrderSignature {
 
   @Id
-  @Column(nullable = false, updatable = false)
-  @GeneratedValue
   @UuidGenerator
+  @Column(nullable = false, updatable = false)
   private UUID id;
 
   @Column(nullable = false, columnDefinition = "text")
   private String signatureType;
+
+  @Column(nullable = false)
+  private OffsetDateTime signedAt;
 
   @Column(nullable = false, columnDefinition = "text")
   private String signerName;
@@ -40,14 +41,11 @@ public class WorkOrderSignature {
   private String storageKey;
 
   @Column(nullable = false)
-  private OffsetDateTime signedAt;
-
-  @Column(nullable = false)
-  private OffsetDateTime createdAt;
+  private UUID workOrderId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "work_order_id", nullable = false)
-  private WorkOrder workOrder;
+  @JoinColumn(name = "organization_id", nullable = false)
+  private Organization organization;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)

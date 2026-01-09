@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EngineerLocationRepository extends JpaRepository<EngineerLocation, UUID> {
 
-  EngineerLocation findFirstByEngineerUserId(UUID id);
+  EngineerLocation findFirstByOrganizationId(UUID id);
 }

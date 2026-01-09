@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SyncQueueRepository extends JpaRepository<SyncQueue, UUID> {
 
-  SyncQueue findFirstByUserId(UUID id);
+  SyncQueue findFirstByOrganizationId(UUID id);
 }
