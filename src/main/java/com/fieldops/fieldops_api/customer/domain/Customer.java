@@ -1,15 +1,14 @@
 package com.fieldops.fieldops_api.customer.domain;
 
-import com.fieldops.fieldops_api.location.domain.Location;
+import com.fieldops.fieldops_api.organization.domain.Organization;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,34 +24,31 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Customer {
 
   @Id
-  @Column(nullable = false, updatable = false)
-  @GeneratedValue
   @UuidGenerator
+  @Column(nullable = false, updatable = false)
   private UUID id;
+
+  @Column(nullable = false)
+  private Long changeVersion;
+
+  @Column(columnDefinition = "text")
+  private String externalRef;
 
   @Column(nullable = false, columnDefinition = "text")
   private String name;
 
   @Column(columnDefinition = "text")
-  private String externalRef;
-
-  @Column(columnDefinition = "text")
   private String phone;
-
-  @Column(nullable = false)
-  private Integer version;
-
-  @Column(nullable = false)
-  private Long changeVersion;
-
-  @Column(nullable = false)
-  private OffsetDateTime createdAt;
 
   @Column(nullable = false)
   private OffsetDateTime updatedAt;
 
-  @OneToMany(mappedBy = "customer")
-  private Set<Location> customerLocations = new HashSet<>();
+  @Column(nullable = false)
+  private Integer version;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "organization_id", nullable = false)
+  private Organization organization;
 
   @CreatedDate
   @Column(nullable = false, updatable = false)

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DeviceSyncStateRepository extends JpaRepository<DeviceSyncState, UUID> {
 
-  DeviceSyncState findFirstByUserId(UUID id);
+  DeviceSyncState findFirstByOrganizationId(UUID id);
 }

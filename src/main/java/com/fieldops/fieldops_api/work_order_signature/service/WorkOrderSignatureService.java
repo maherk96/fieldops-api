@@ -1,10 +1,10 @@
 package com.fieldops.fieldops_api.work_order_signature.service;
 
-import com.fieldops.fieldops_api.events.BeforeDeleteWorkOrder;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
-import com.fieldops.fieldops_api.work_order.domain.WorkOrder;
-import com.fieldops.fieldops_api.work_order.repos.WorkOrderRepository;
 import com.fieldops.fieldops_api.work_order_signature.domain.WorkOrderSignature;
 import com.fieldops.fieldops_api.work_order_signature.model.WorkOrderSignatureDTO;
 import com.fieldops.fieldops_api.work_order_signature.repos.WorkOrderSignatureRepository;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 public class WorkOrderSignatureService {
 
   private final WorkOrderSignatureRepository workOrderSignatureRepository;
-  private final WorkOrderRepository workOrderRepository;
+  private final OrganizationRepository organizationRepository;
 
   public WorkOrderSignatureService(
       final WorkOrderSignatureRepository workOrderSignatureRepository,
-      final WorkOrderRepository workOrderRepository) {
+      final OrganizationRepository organizationRepository) {
     this.workOrderSignatureRepository = workOrderSignatureRepository;
-    this.workOrderRepository = workOrderRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<WorkOrderSignatureDTO> findAll() {
@@ -65,44 +65,47 @@ public class WorkOrderSignatureService {
       final WorkOrderSignature workOrderSignature,
       final WorkOrderSignatureDTO workOrderSignatureDTO) {
     workOrderSignatureDTO.setId(workOrderSignature.getId());
+    workOrderSignatureDTO.setDateCreated(workOrderSignature.getDateCreated());
+    workOrderSignatureDTO.setLastUpdated(workOrderSignature.getLastUpdated());
     workOrderSignatureDTO.setSignatureType(workOrderSignature.getSignatureType());
+    workOrderSignatureDTO.setSignedAt(workOrderSignature.getSignedAt());
     workOrderSignatureDTO.setSignerName(workOrderSignature.getSignerName());
     workOrderSignatureDTO.setStorageKey(workOrderSignature.getStorageKey());
-    workOrderSignatureDTO.setSignedAt(workOrderSignature.getSignedAt());
-    workOrderSignatureDTO.setCreatedAt(workOrderSignature.getCreatedAt());
-    workOrderSignatureDTO.setWorkOrder(
-        workOrderSignature.getWorkOrder() == null
+    workOrderSignatureDTO.setWorkOrderId(workOrderSignature.getWorkOrderId());
+    workOrderSignatureDTO.setOrganization(
+        workOrderSignature.getOrganization() == null
             ? null
-            : workOrderSignature.getWorkOrder().getId());
+            : workOrderSignature.getOrganization().getId());
     return workOrderSignatureDTO;
   }
 
   private WorkOrderSignature mapToEntity(
       final WorkOrderSignatureDTO workOrderSignatureDTO,
       final WorkOrderSignature workOrderSignature) {
+
     workOrderSignature.setSignatureType(workOrderSignatureDTO.getSignatureType());
+    workOrderSignature.setSignedAt(workOrderSignatureDTO.getSignedAt());
     workOrderSignature.setSignerName(workOrderSignatureDTO.getSignerName());
     workOrderSignature.setStorageKey(workOrderSignatureDTO.getStorageKey());
-    workOrderSignature.setSignedAt(workOrderSignatureDTO.getSignedAt());
-    workOrderSignature.setCreatedAt(workOrderSignatureDTO.getCreatedAt());
-    final WorkOrder workOrder =
-        workOrderSignatureDTO.getWorkOrder() == null
+    workOrderSignature.setWorkOrderId(workOrderSignatureDTO.getWorkOrderId());
+    final Organization organization =
+        workOrderSignatureDTO.getOrganization() == null
             ? null
-            : workOrderRepository
-                .findById(workOrderSignatureDTO.getWorkOrder())
-                .orElseThrow(() -> new NotFoundException("workOrder not found"));
-    workOrderSignature.setWorkOrder(workOrder);
+            : organizationRepository
+                .findById(workOrderSignatureDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    workOrderSignature.setOrganization(organization);
     return workOrderSignature;
   }
 
-  @EventListener(BeforeDeleteWorkOrder.class)
-  public void on(final BeforeDeleteWorkOrder event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final WorkOrderSignature workOrderWorkOrderSignature =
-        workOrderSignatureRepository.findFirstByWorkOrderId(event.getId());
-    if (workOrderWorkOrderSignature != null) {
-      referencedException.setKey("workOrder.workOrderSignature.workOrder.referenced");
-      referencedException.addParam(workOrderWorkOrderSignature.getId());
+    final WorkOrderSignature organizationWorkOrderSignature =
+        workOrderSignatureRepository.findFirstByOrganizationId(event.getId());
+    if (organizationWorkOrderSignature != null) {
+      referencedException.setKey("organization.workOrderSignature.organization.referenced");
+      referencedException.addParam(organizationWorkOrderSignature.getId());
       throw referencedException;
     }
   }

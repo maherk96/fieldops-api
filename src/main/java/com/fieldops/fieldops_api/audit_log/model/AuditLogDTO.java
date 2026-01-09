@@ -13,24 +13,30 @@ public class AuditLogDTO {
 
   private UUID id;
 
-  @NotNull private String tableName;
-
-  @NotNull private UUID recordId;
-
-  @NotNull private String operation;
-
-  private String oldValues;
-
-  private String newValues;
-
   @NotNull private OffsetDateTime changedAt;
+
+  @NotNull private OffsetDateTime dateCreated;
+
+  private String deviceId;
 
   @Size(max = 255)
   private String ipAddress;
 
+  @NotNull private OffsetDateTime lastUpdated;
+
+  private String newValues;
+
+  private String oldValues;
+
+  @NotNull private String operation;
+
+  @NotNull private UUID recordId;
+
+  @NotNull private String tableName;
+
   private String userAgent;
 
-  private String deviceId;
-
   private UUID changedByUser;
+
+  private UUID organization;
 }

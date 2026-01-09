@@ -1,11 +1,11 @@
 package com.fieldops.fieldops_api.sync_conflict.service;
 
-import com.fieldops.fieldops_api.events.BeforeDeleteUser;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.sync_conflict.domain.SyncConflict;
 import com.fieldops.fieldops_api.sync_conflict.model.SyncConflictDTO;
 import com.fieldops.fieldops_api.sync_conflict.repos.SyncConflictRepository;
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.user.repos.UserRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
@@ -18,12 +18,13 @@ import org.springframework.stereotype.Service;
 public class SyncConflictService {
 
   private final SyncConflictRepository syncConflictRepository;
-  private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
 
   public SyncConflictService(
-      final SyncConflictRepository syncConflictRepository, final UserRepository userRepository) {
+      final SyncConflictRepository syncConflictRepository,
+      final OrganizationRepository organizationRepository) {
     this.syncConflictRepository = syncConflictRepository;
-    this.userRepository = userRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<SyncConflictDTO> findAll() {
@@ -62,55 +63,57 @@ public class SyncConflictService {
   private SyncConflictDTO mapToDTO(
       final SyncConflict syncConflict, final SyncConflictDTO syncConflictDTO) {
     syncConflictDTO.setId(syncConflict.getId());
-    syncConflictDTO.setDeviceId(syncConflict.getDeviceId());
-    syncConflictDTO.setTableName(syncConflict.getTableName());
-    syncConflictDTO.setRecordId(syncConflict.getRecordId());
     syncConflictDTO.setConflictType(syncConflict.getConflictType());
-    syncConflictDTO.setLocalVersion(syncConflict.getLocalVersion());
-    syncConflictDTO.setServerVersion(syncConflict.getServerVersion());
+    syncConflictDTO.setDateCreated(syncConflict.getDateCreated());
+    syncConflictDTO.setDeviceId(syncConflict.getDeviceId());
+    syncConflictDTO.setLastUpdated(syncConflict.getLastUpdated());
     syncConflictDTO.setLocalData(syncConflict.getLocalData());
-    syncConflictDTO.setServerData(syncConflict.getServerData());
-    syncConflictDTO.setResolved(syncConflict.getResolved());
+    syncConflictDTO.setLocalVersion(syncConflict.getLocalVersion());
+    syncConflictDTO.setRecordId(syncConflict.getRecordId());
     syncConflictDTO.setResolutionStrategy(syncConflict.getResolutionStrategy());
+    syncConflictDTO.setResolved(syncConflict.getResolved());
     syncConflictDTO.setResolvedAt(syncConflict.getResolvedAt());
-    syncConflictDTO.setCreatedAt(syncConflict.getCreatedAt());
-    syncConflictDTO.setResolvedByUser(
-        syncConflict.getResolvedByUser() == null ? null : syncConflict.getResolvedByUser().getId());
+    syncConflictDTO.setServerData(syncConflict.getServerData());
+    syncConflictDTO.setServerVersion(syncConflict.getServerVersion());
+    syncConflictDTO.setTableName(syncConflict.getTableName());
+    syncConflictDTO.setResolvedByUserId(syncConflict.getResolvedByUserId());
+    syncConflictDTO.setOrganization(
+        syncConflict.getOrganization() == null ? null : syncConflict.getOrganization().getId());
     return syncConflictDTO;
   }
 
   private SyncConflict mapToEntity(
       final SyncConflictDTO syncConflictDTO, final SyncConflict syncConflict) {
-    syncConflict.setDeviceId(syncConflictDTO.getDeviceId());
-    syncConflict.setTableName(syncConflictDTO.getTableName());
-    syncConflict.setRecordId(syncConflictDTO.getRecordId());
     syncConflict.setConflictType(syncConflictDTO.getConflictType());
-    syncConflict.setLocalVersion(syncConflictDTO.getLocalVersion());
-    syncConflict.setServerVersion(syncConflictDTO.getServerVersion());
+    syncConflict.setDeviceId(syncConflictDTO.getDeviceId());
     syncConflict.setLocalData(syncConflictDTO.getLocalData());
-    syncConflict.setServerData(syncConflictDTO.getServerData());
-    syncConflict.setResolved(syncConflictDTO.getResolved());
+    syncConflict.setLocalVersion(syncConflictDTO.getLocalVersion());
+    syncConflict.setRecordId(syncConflictDTO.getRecordId());
     syncConflict.setResolutionStrategy(syncConflictDTO.getResolutionStrategy());
+    syncConflict.setResolved(syncConflictDTO.getResolved());
     syncConflict.setResolvedAt(syncConflictDTO.getResolvedAt());
-    syncConflict.setCreatedAt(syncConflictDTO.getCreatedAt());
-    final User resolvedByUser =
-        syncConflictDTO.getResolvedByUser() == null
+    syncConflict.setServerData(syncConflictDTO.getServerData());
+    syncConflict.setServerVersion(syncConflictDTO.getServerVersion());
+    syncConflict.setTableName(syncConflictDTO.getTableName());
+    syncConflict.setResolvedByUserId(syncConflictDTO.getResolvedByUserId());
+    final Organization organization =
+        syncConflictDTO.getOrganization() == null
             ? null
-            : userRepository
-                .findById(syncConflictDTO.getResolvedByUser())
-                .orElseThrow(() -> new NotFoundException("resolvedByUser not found"));
-    syncConflict.setResolvedByUser(resolvedByUser);
+            : organizationRepository
+                .findById(syncConflictDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    syncConflict.setOrganization(organization);
     return syncConflict;
   }
 
-  @EventListener(BeforeDeleteUser.class)
-  public void on(final BeforeDeleteUser event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final SyncConflict resolvedByUserSyncConflict =
-        syncConflictRepository.findFirstByResolvedByUserId(event.getId());
-    if (resolvedByUserSyncConflict != null) {
-      referencedException.setKey("user.syncConflict.resolvedByUser.referenced");
-      referencedException.addParam(resolvedByUserSyncConflict.getId());
+    final SyncConflict organizationSyncConflict =
+        syncConflictRepository.findFirstByOrganizationId(event.getId());
+    if (organizationSyncConflict != null) {
+      referencedException.setKey("organization.syncConflict.organization.referenced");
+      referencedException.addParam(organizationSyncConflict.getId());
       throw referencedException;
     }
   }

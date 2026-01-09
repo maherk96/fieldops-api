@@ -3,9 +3,9 @@ package com.fieldops.fieldops_api.engineer_location.service;
 import com.fieldops.fieldops_api.engineer_location.domain.EngineerLocation;
 import com.fieldops.fieldops_api.engineer_location.model.EngineerLocationDTO;
 import com.fieldops.fieldops_api.engineer_location.repos.EngineerLocationRepository;
-import com.fieldops.fieldops_api.events.BeforeDeleteUser;
-import com.fieldops.fieldops_api.user.domain.User;
-import com.fieldops.fieldops_api.user.repos.UserRepository;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 public class EngineerLocationService {
 
   private final EngineerLocationRepository engineerLocationRepository;
-  private final UserRepository userRepository;
+  private final OrganizationRepository organizationRepository;
 
   public EngineerLocationService(
       final EngineerLocationRepository engineerLocationRepository,
-      final UserRepository userRepository) {
+      final OrganizationRepository organizationRepository) {
     this.engineerLocationRepository = engineerLocationRepository;
-    this.userRepository = userRepository;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<EngineerLocationDTO> findAll() {
@@ -64,43 +64,45 @@ public class EngineerLocationService {
   private EngineerLocationDTO mapToDTO(
       final EngineerLocation engineerLocation, final EngineerLocationDTO engineerLocationDTO) {
     engineerLocationDTO.setId(engineerLocation.getId());
+    engineerLocationDTO.setAccuracyMeters(engineerLocation.getAccuracyMeters());
+    engineerLocationDTO.setDateCreated(engineerLocation.getDateCreated());
+    engineerLocationDTO.setLastUpdated(engineerLocation.getLastUpdated());
     engineerLocationDTO.setLat(engineerLocation.getLat());
     engineerLocationDTO.setLng(engineerLocation.getLng());
-    engineerLocationDTO.setAccuracyMeters(engineerLocation.getAccuracyMeters());
     engineerLocationDTO.setRecordedAt(engineerLocation.getRecordedAt());
-    engineerLocationDTO.setCreatedAt(engineerLocation.getCreatedAt());
-    engineerLocationDTO.setEngineerUser(
-        engineerLocation.getEngineerUser() == null
+    engineerLocationDTO.setEngineerUserId(engineerLocation.getEngineerUserId());
+    engineerLocationDTO.setOrganization(
+        engineerLocation.getOrganization() == null
             ? null
-            : engineerLocation.getEngineerUser().getId());
+            : engineerLocation.getOrganization().getId());
     return engineerLocationDTO;
   }
 
   private EngineerLocation mapToEntity(
       final EngineerLocationDTO engineerLocationDTO, final EngineerLocation engineerLocation) {
+    engineerLocation.setAccuracyMeters(engineerLocationDTO.getAccuracyMeters());
     engineerLocation.setLat(engineerLocationDTO.getLat());
     engineerLocation.setLng(engineerLocationDTO.getLng());
-    engineerLocation.setAccuracyMeters(engineerLocationDTO.getAccuracyMeters());
     engineerLocation.setRecordedAt(engineerLocationDTO.getRecordedAt());
-    engineerLocation.setCreatedAt(engineerLocationDTO.getCreatedAt());
-    final User engineerUser =
-        engineerLocationDTO.getEngineerUser() == null
+    engineerLocation.setEngineerUserId(engineerLocationDTO.getEngineerUserId());
+    final Organization organization =
+        engineerLocationDTO.getOrganization() == null
             ? null
-            : userRepository
-                .findById(engineerLocationDTO.getEngineerUser())
-                .orElseThrow(() -> new NotFoundException("engineerUser not found"));
-    engineerLocation.setEngineerUser(engineerUser);
+            : organizationRepository
+                .findById(engineerLocationDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    engineerLocation.setOrganization(organization);
     return engineerLocation;
   }
 
-  @EventListener(BeforeDeleteUser.class)
-  public void on(final BeforeDeleteUser event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final EngineerLocation engineerUserEngineerLocation =
-        engineerLocationRepository.findFirstByEngineerUserId(event.getId());
-    if (engineerUserEngineerLocation != null) {
-      referencedException.setKey("user.engineerLocation.engineerUser.referenced");
-      referencedException.addParam(engineerUserEngineerLocation.getId());
+    final EngineerLocation organizationEngineerLocation =
+        engineerLocationRepository.findFirstByOrganizationId(event.getId());
+    if (organizationEngineerLocation != null) {
+      referencedException.setKey("organization.engineerLocation.organization.referenced");
+      referencedException.addParam(organizationEngineerLocation.getId());
       throw referencedException;
     }
   }

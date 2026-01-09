@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OfflineChangesLogRepository extends JpaRepository<OfflineChangesLog, UUID> {
 
-  OfflineChangesLog findFirstByUserId(UUID id);
+  OfflineChangesLog findFirstByOrganizationId(UUID id);
 }

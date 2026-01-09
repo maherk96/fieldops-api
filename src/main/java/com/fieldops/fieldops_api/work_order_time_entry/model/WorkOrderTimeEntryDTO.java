@@ -12,23 +12,27 @@ public class WorkOrderTimeEntryDTO {
 
   private UUID id;
 
-  @NotNull private String entryType;
+  @NotNull private Long changeVersion;
 
-  @NotNull private OffsetDateTime startTime;
-
-  private OffsetDateTime endTime;
+  @NotNull private OffsetDateTime dateCreated;
 
   private Integer durationMinutes;
 
+  private OffsetDateTime endTime;
+
+  @NotNull private String entryType;
+
+  @NotNull private OffsetDateTime lastUpdated;
+
   private String notes;
 
-  @NotNull private Long changeVersion;
-
-  @NotNull private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime startTime;
 
   @NotNull private OffsetDateTime updatedAt;
 
-  @NotNull private UUID workOrder;
+  @NotNull private UUID engineerUserId;
 
-  @NotNull private UUID engineerUser;
+  @NotNull private UUID workOrderId;
+
+  @NotNull private UUID organization;
 }

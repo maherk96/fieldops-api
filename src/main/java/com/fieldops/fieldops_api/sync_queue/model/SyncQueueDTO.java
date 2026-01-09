@@ -12,27 +12,31 @@ public class SyncQueueDTO {
 
   private UUID id;
 
+  @NotNull private OffsetDateTime dateCreated;
+
   @NotNull private String deviceId;
-
-  @NotNull private String operationType;
-
-  @NotNull private String tableName;
-
-  @NotNull private UUID recordId;
-
-  @NotNull private String payload;
-
-  @NotNull private Integer retryCount;
 
   private String lastError;
 
+  @NotNull private OffsetDateTime lastUpdated;
+
   private OffsetDateTime nextRetryAt;
+
+  @NotNull private String operationType;
+
+  @NotNull private String payload;
+
+  @NotNull private UUID recordId;
+
+  @NotNull private Integer retryCount;
 
   @NotNull private String status;
 
-  @NotNull private OffsetDateTime createdAt;
+  @NotNull private String tableName;
 
   @NotNull private OffsetDateTime updatedAt;
 
-  @NotNull private UUID user;
+  @NotNull private UUID userId;
+
+  @NotNull private UUID organization;
 }

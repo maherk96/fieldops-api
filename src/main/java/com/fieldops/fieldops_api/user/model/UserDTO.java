@@ -12,19 +12,21 @@ public class UserDTO {
 
   private UUID id;
 
+  @NotNull private Boolean active;
+
+  @NotNull private Long changeVersion;
+
   @NotNull private String email;
 
   @NotNull private String fullName;
 
+  @NotNull private String password;
+
   @NotNull private String role;
 
-  @NotNull private Boolean active;
+  @NotNull private OffsetDateTime updatedAt;
 
   @NotNull private Integer version;
 
-  @NotNull private Long changeVersion;
-
-  @NotNull private OffsetDateTime createdAt;
-
-  @NotNull private OffsetDateTime updatedAt;
+  @NotNull private UUID organization;
 }

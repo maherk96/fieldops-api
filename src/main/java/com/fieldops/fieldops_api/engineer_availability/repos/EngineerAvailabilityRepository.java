@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EngineerAvailabilityRepository extends JpaRepository<EngineerAvailability, UUID> {
 
-  EngineerAvailability findFirstByEngineerUserId(UUID id);
+  EngineerAvailability findFirstByOrganizationId(UUID id);
 }

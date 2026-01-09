@@ -6,7 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WorkOrderTimeEntryRepository extends JpaRepository<WorkOrderTimeEntry, UUID> {
 
-  WorkOrderTimeEntry findFirstByWorkOrderId(UUID id);
-
-  WorkOrderTimeEntry findFirstByEngineerUserId(UUID id);
+  WorkOrderTimeEntry findFirstByOrganizationId(UUID id);
 }

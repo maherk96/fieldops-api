@@ -12,17 +12,21 @@ public class DeviceSyncStateDTO {
 
   private UUID id;
 
-  @NotNull private String deviceId;
+  @NotNull private OffsetDateTime dateCreated;
 
-  @NotNull private String tableName;
+  @NotNull private String deviceId;
 
   @NotNull private Long lastChangeVersion;
 
   @NotNull private OffsetDateTime lastSyncAt;
 
-  @NotNull private OffsetDateTime createdAt;
+  @NotNull private OffsetDateTime lastUpdated;
+
+  @NotNull private String tableName;
 
   @NotNull private OffsetDateTime updatedAt;
 
-  @NotNull private UUID user;
+  @NotNull private UUID userId;
+
+  @NotNull private UUID organization;
 }

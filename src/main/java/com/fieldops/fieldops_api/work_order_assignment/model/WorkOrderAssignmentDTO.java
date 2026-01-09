@@ -12,15 +12,21 @@ public class WorkOrderAssignmentDTO {
 
   private UUID id;
 
-  @NotNull private OffsetDateTime assignedAt;
-
-  private OffsetDateTime unassignedAt;
-
   @NotNull private Boolean active;
+
+  @NotNull private OffsetDateTime assignedAt;
 
   @NotNull private Long changeVersion;
 
-  @NotNull private UUID workOrder;
+  @NotNull private OffsetDateTime dateCreated;
 
-  @NotNull private UUID engineerUser;
+  @NotNull private OffsetDateTime lastUpdated;
+
+  private OffsetDateTime unassignedAt;
+
+  @NotNull private UUID engineerUserId;
+
+  @NotNull private UUID workOrderId;
+
+  @NotNull private UUID organization;
 }

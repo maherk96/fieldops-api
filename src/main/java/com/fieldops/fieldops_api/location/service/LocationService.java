@@ -1,17 +1,15 @@
 package com.fieldops.fieldops_api.location.service;
 
-import com.fieldops.fieldops_api.customer.domain.Customer;
-import com.fieldops.fieldops_api.customer.repos.CustomerRepository;
-import com.fieldops.fieldops_api.events.BeforeDeleteCustomer;
-import com.fieldops.fieldops_api.events.BeforeDeleteLocation;
+import com.fieldops.fieldops_api.events.BeforeDeleteOrganization;
 import com.fieldops.fieldops_api.location.domain.Location;
 import com.fieldops.fieldops_api.location.model.LocationDTO;
 import com.fieldops.fieldops_api.location.repos.LocationRepository;
+import com.fieldops.fieldops_api.organization.domain.Organization;
+import com.fieldops.fieldops_api.organization.repos.OrganizationRepository;
 import com.fieldops.fieldops_api.util.NotFoundException;
 import com.fieldops.fieldops_api.util.ReferencedException;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,16 +18,13 @@ import org.springframework.stereotype.Service;
 public class LocationService {
 
   private final LocationRepository locationRepository;
-  private final CustomerRepository customerRepository;
-  private final ApplicationEventPublisher publisher;
+  private final OrganizationRepository organizationRepository;
 
   public LocationService(
       final LocationRepository locationRepository,
-      final CustomerRepository customerRepository,
-      final ApplicationEventPublisher publisher) {
+      final OrganizationRepository organizationRepository) {
     this.locationRepository = locationRepository;
-    this.customerRepository = customerRepository;
-    this.publisher = publisher;
+    this.organizationRepository = organizationRepository;
   }
 
   public List<LocationDTO> findAll() {
@@ -58,62 +53,65 @@ public class LocationService {
 
   public void delete(final UUID id) {
     final Location location = locationRepository.findById(id).orElseThrow(NotFoundException::new);
-    publisher.publishEvent(new BeforeDeleteLocation(id));
     locationRepository.delete(location);
   }
 
   private LocationDTO mapToDTO(final Location location, final LocationDTO locationDTO) {
     locationDTO.setId(location.getId());
-    locationDTO.setName(location.getName());
     locationDTO.setAddressLine1(location.getAddressLine1());
     locationDTO.setAddressLine2(location.getAddressLine2());
+    locationDTO.setChangeVersion(location.getChangeVersion());
     locationDTO.setCity(location.getCity());
-    locationDTO.setRegion(location.getRegion());
-    locationDTO.setPostcode(location.getPostcode());
-    locationDTO.setCountry(location.getCountry());
     locationDTO.setContactPhone(location.getContactPhone());
+    locationDTO.setCountry(location.getCountry());
+    locationDTO.setDateCreated(location.getDateCreated());
+    locationDTO.setLastUpdated(location.getLastUpdated());
     locationDTO.setLat(location.getLat());
     locationDTO.setLng(location.getLng());
-    locationDTO.setVersion(location.getVersion());
-    locationDTO.setChangeVersion(location.getChangeVersion());
-    locationDTO.setCreatedAt(location.getCreatedAt());
+    locationDTO.setName(location.getName());
+    locationDTO.setPostcode(location.getPostcode());
+    locationDTO.setRegion(location.getRegion());
     locationDTO.setUpdatedAt(location.getUpdatedAt());
-    locationDTO.setCustomer(location.getCustomer() == null ? null : location.getCustomer().getId());
+    locationDTO.setVersion(location.getVersion());
+    locationDTO.setCustomerId(location.getCustomerId());
+    locationDTO.setOrganization(
+        location.getOrganization() == null ? null : location.getOrganization().getId());
     return locationDTO;
   }
 
   private Location mapToEntity(final LocationDTO locationDTO, final Location location) {
-    location.setName(locationDTO.getName());
     location.setAddressLine1(locationDTO.getAddressLine1());
     location.setAddressLine2(locationDTO.getAddressLine2());
+    location.setChangeVersion(locationDTO.getChangeVersion());
     location.setCity(locationDTO.getCity());
-    location.setRegion(locationDTO.getRegion());
-    location.setPostcode(locationDTO.getPostcode());
-    location.setCountry(locationDTO.getCountry());
     location.setContactPhone(locationDTO.getContactPhone());
+    location.setCountry(locationDTO.getCountry());
     location.setLat(locationDTO.getLat());
     location.setLng(locationDTO.getLng());
-    location.setVersion(locationDTO.getVersion());
-    location.setChangeVersion(locationDTO.getChangeVersion());
-    location.setCreatedAt(locationDTO.getCreatedAt());
+    location.setName(locationDTO.getName());
+    location.setPostcode(locationDTO.getPostcode());
+    location.setRegion(locationDTO.getRegion());
     location.setUpdatedAt(locationDTO.getUpdatedAt());
-    final Customer customer =
-        locationDTO.getCustomer() == null
+    location.setVersion(locationDTO.getVersion());
+    location.setCustomerId(locationDTO.getCustomerId());
+    final Organization organization =
+        locationDTO.getOrganization() == null
             ? null
-            : customerRepository
-                .findById(locationDTO.getCustomer())
-                .orElseThrow(() -> new NotFoundException("customer not found"));
-    location.setCustomer(customer);
+            : organizationRepository
+                .findById(locationDTO.getOrganization())
+                .orElseThrow(() -> new NotFoundException("organization not found"));
+    location.setOrganization(organization);
     return location;
   }
 
-  @EventListener(BeforeDeleteCustomer.class)
-  public void on(final BeforeDeleteCustomer event) {
+  @EventListener(BeforeDeleteOrganization.class)
+  public void on(final BeforeDeleteOrganization event) {
     final ReferencedException referencedException = new ReferencedException();
-    final Location customerLocation = locationRepository.findFirstByCustomerId(event.getId());
-    if (customerLocation != null) {
-      referencedException.setKey("customer.location.customer.referenced");
-      referencedException.addParam(customerLocation.getId());
+    final Location organizationLocation =
+        locationRepository.findFirstByOrganizationId(event.getId());
+    if (organizationLocation != null) {
+      referencedException.setKey("organization.location.organization.referenced");
+      referencedException.addParam(organizationLocation.getId());
       throw referencedException;
     }
   }
